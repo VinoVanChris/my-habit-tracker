@@ -31,7 +31,6 @@
             --overlay: rgba(255, 255, 255, 0.2);
         }
 
-        /* ANIMATIONS */
         @keyframes slideIn {
             from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
@@ -73,12 +72,14 @@
             box-shadow: 0 30px 60px rgba(0,0,0,0.4);
         }
 
+        /* HEADER & LARGER LOGO */
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         
-        /* LOGO STYLING WITH TYPOGRAPHY MIX */
-        .logo-wrap { display: flex; align-items: center; gap: 8px; }
-        .logo-text { color: var(--text); font-size: 20px; font-weight: 400; letter-spacing: -0.5px; margin: 0; }
-        .logo-highlight { color: var(--orange); font-weight: 800; text-transform: uppercase; letter-spacing: 0px; }
+        /* NO SPACE AND 200% LARGER */
+        .logo-wrap { display: flex; align-items: center; gap: 0px; }
+        
+        .logo-text { color: var(--text); font-size: 40px; font-weight: 400; letter-spacing: -1.5px; margin: 0; line-height: 1; }
+        .logo-highlight { color: var(--orange); font-weight: 900; text-transform: uppercase; letter-spacing: -0.5px; }
 
         .streak-display { display: flex; align-items: center; gap: 5px; color: var(--orange); font-weight: 700; font-size: 16px; }
 
@@ -90,7 +91,7 @@
             background: var(--item-bg); border: 1px solid var(--border); color: var(--text); 
             padding: 16px; border-radius: 16px; width: 100%; font-size: 15px; outline: none; transition: all 0.2s;
         }
-        select { -webkit-appearance: none; appearance: none; } /* Native select styling fix */
+        select { -webkit-appearance: none; appearance: none; }
         
         #add-btn { background: var(--orange); color: white; font-weight: 700; margin: 15px 0 25px 0; cursor: pointer; border: none; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
         #add-btn:active { transform: scale(0.96); }
@@ -109,9 +110,9 @@
         }
         .completed .check-btn { background: var(--orange); border-color: var(--orange); }
 
-        /* Minimal SVG Icon styling */
         .icon-svg { fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-        .logo-icon { fill: var(--orange); stroke: none; } /* Special style for solid logo */
+        /* DYNAMIC SIZE FOR LOGO ICON */
+        .logo-icon { fill: var(--orange); stroke: none; width: 40px; height: 40px; }
 
         .footer { margin-top: 30px; display: flex; gap: 20px; }
         .icon-toggle {
@@ -127,7 +128,7 @@
     <div class="container">
         <div class="header">
             <div class="logo-wrap">
-                <svg class="logo-icon" width="20" height="20" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                <svg class="logo-icon" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
                 <h1 class="logo-text"><span class="logo-highlight">VIBE</span>track</h1>
             </div>
 
@@ -173,7 +174,6 @@
             const body = document.getElementById('mainBody');
             if (usePhoto) {
                 body.classList.add('has-photo');
-                // Neutral mountain landscape
                 body.style.backgroundImage = `url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1600&q=80')`;
             } else {
                 body.classList.remove('has-photo');
@@ -218,11 +218,10 @@
             habits.forEach((h, i) => {
                 const el = document.createElement('div');
                 el.className = `habit-item ${h.completed ? 'completed' : ''}`;
-                // Staggered animation delay
                 el.style.animationDelay = (i * 0.05) + 's';
                 el.innerHTML = `
                     <button class="check-btn" onclick="toggle(${i})">
-                        ${h.completed ? '<svg class="icon-svg" style="color:white; stroke-width:3;" width="16" height="16" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>' : ''}
+                        ${h.completed ? '<svg class="icon-svg" style="color:white; stroke-width:3;" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>' : ''}
                     </button>
                     <span class="habit-text">${h.text}</span>
                     <button style="background:none; border:none; color:#555; cursor:pointer;" onclick="removeHabit(${i})">✕</button>
