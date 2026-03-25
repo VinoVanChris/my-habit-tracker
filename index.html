@@ -10,6 +10,7 @@
             --orange: #ff6600;
             --white: #ffffff;
             --grey: #262626;
+            --red: #ff4444;
         }
 
         body {
@@ -38,8 +39,7 @@
             background: var(--orange);
             height: 100%;
             width: 0%;
-            transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 0 10px rgba(255, 102, 0, 0.5);
+            transition: width 0.4s ease;
         }
 
         .input-area {
@@ -56,10 +56,9 @@
             background: var(--grey);
             border: 1px solid #444;
             color: white;
-            padding: 15px; /* Bigger for touch */
+            padding: 15px;
             border-radius: 10px;
             font-size: 16px;
-            outline: none;
         }
 
         button#add-btn {
@@ -69,33 +68,47 @@
             padding: 15px;
             border-radius: 10px;
             font-weight: bold;
-            cursor: pointer;
-            text-transform: uppercase;
         }
 
         .habit-item {
             background: var(--grey);
-            padding: 18px;
+            padding: 15px;
             border-radius: 15px;
             margin-bottom: 12px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
             border-left: 5px solid var(--orange);
         }
 
-        .habit-item.completed { opacity: 0.3; border-left-color: #444; }
-        .check-btn { background: none; border: 2px solid var(--orange); color: var(--orange); border-radius: 10px; width: 40px; height: 40px; font-size: 20px; }
+        .habit-text { flex-grow: 1; margin-left: 10px; }
+        .habit-item.completed { opacity: 0.4; border-left-color: #444; }
+
+        .btn-group { display: flex; gap: 10px; }
+        
+        /* Delete Button Style */
+        .del-btn { 
+            background: none; 
+            border: 1px solid var(--red); 
+            color: var(--red); 
+            border-radius: 8px; 
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .check-btn { 
+            background: none; 
+            border: 2px solid var(--orange); 
+            color: var(--orange); 
+            border-radius: 10px; 
+            width: 35px; height: 35px; 
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
         <h1>VIBETRACK</h1>
-        
-        <div class="progress-container">
-            <div id="progressBar"></div>
-        </div>
+        <div class="progress-container"><div id="progressBar"></div></div>
 
         <div class="input-area">
             <select id="habitSelect">
@@ -104,12 +117,9 @@
                 <option value="📖 Read 10 Pages">📖 Read 10 Pages</option>
                 <option value="🧘 Meditation">🧘 Meditation</option>
                 <option value="🏋️ Workout">🏋️ Workout</option>
-                <option value="🍎 Eat Healthy">🍎 Eat Healthy</option>
                 <option value="CUSTOM">➕ Custom...</option>
             </select>
-
-            <input type="text" id="habitInput" placeholder="Enter custom habit name..." style="display:none;">
-            
+            <input type="text" id="habitInput" placeholder="Enter habit name..." style="display:none;">
             <button id="add-btn">ADD HABIT</button>
         </div>
 
@@ -126,12 +136,7 @@
         let habits = JSON.parse(localStorage.getItem('vibeHabits')) || [];
 
         select.addEventListener('change', () => {
-            if (select.value === 'CUSTOM') {
-                input.style.display = 'block';
-                input.focus();
-            } else {
-                input.style.display = 'none';
-            }
+            input.style.display = (select.value === 'CUSTOM') ? 'block' : 'none';
         });
 
         function updateProgress() {
@@ -145,7 +150,13 @@
             habits.forEach((h, i) => {
                 const el = document.createElement('div');
                 el.className = `habit-item ${h.completed ? 'completed' : ''}`;
-                el.innerHTML = `<span>${h.text}</span><button class="check-btn" onclick="toggle(${i})">${h.completed ? '✓' : ''}</button>`;
+                el.innerHTML = `
+                    <button class="check-btn" onclick="toggle(${i})">${h.completed ? '✓' : ''}</button>
+                    <span class="habit-text">${h.text}</span>
+                    <div class="btn-group">
+                        <button class="del-btn" onclick="removeHabit(${i})">DELETE</button>
+                    </div>
+                `;
                 list.appendChild(el);
             });
             localStorage.setItem('vibeHabits', JSON.stringify(habits));
@@ -153,26 +164,18 @@
         }
 
         btn.onclick = () => {
-            let habitText = "";
-
-            if (select.value === 'CUSTOM') {
-                habitText = input.value.trim();
-            } else if (select.value !== "") {
-                habitText = select.value;
-            }
-
-            if (habitText) {
-                habits.push({text: habitText, completed: false});
-                // Reset inputs
-                input.value = '';
-                select.value = '';
-                input.style.display = 'none';
+            let val = select.value === 'CUSTOM' ? input.value : select.value;
+            if (val && val !== 'CUSTOM') {
+                habits.push({text: val, completed: false});
+                input.value = ''; select.value = ''; input.style.display = 'none';
                 render();
             }
         };
 
-        window.toggle = (i) => {
-            habits[i].completed = !habits[i].completed;
+        window.toggle = (i) => { habits[i].completed = !habits[i].completed; render(); };
+        
+        window.removeHabit = (i) => {
+            habits.splice(i, 1); // Removes the item from the list
             render();
         };
 
