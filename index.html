@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VIBEtrack Stealth</title>
+    <title>VIBEtrack Titan</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -14,20 +14,20 @@
         :root {
             --bg: #0c0c0c;
             --container-bg: rgba(28, 28, 30, 0.96);
-            --item-bg: rgba(255, 255, 255, 0.06);
+            --item-bg: rgba(255, 255, 255, 0.08);
             --text: #ffffff;
             --orange: #ff6600;
-            --border: rgba(255, 255, 255, 0.12);
+            --border: rgba(255, 255, 255, 0.15);
             --overlay: rgba(0, 0, 0, 0.5);
         }
 
         [data-theme="light"] {
             --bg: #f2f2f7;
             --container-bg: rgba(255, 255, 255, 0.98);
-            --item-bg: rgba(0, 0, 0, 0.04);
+            --item-bg: rgba(0, 0, 0, 0.05);
             --text: #1c1c1e;
-            --border: rgba(0, 0, 0, 0.08);
-            --overlay: rgba(255, 255, 255, 0.1);
+            --border: rgba(0, 0, 0, 0.12);
+            --overlay: rgba(255, 255, 255, 0.2);
         }
 
         body {
@@ -37,7 +37,6 @@
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
             display: flex; flex-direction: column; align-items: center;
             min-height: 100vh; padding: env(safe-area-inset-top) 20px 40px 20px; margin: 0;
-            overflow-x: hidden;
         }
 
         body.has-photo::before {
@@ -49,20 +48,19 @@
             width: 100%; max-width: 480px; z-index: 10; margin-top: 60px;
             background: var(--container-bg); padding: 40px; border-radius: 48px; 
             backdrop-filter: blur(50px); -webkit-backdrop-filter: blur(50px); 
-            border: 1px solid var(--border); box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+            border: 1px solid var(--border); box-shadow: 0 40px 80px rgba(0,0,0,0.6);
         }
 
-        /* LOCKED AT PREVIOUS SIZE */
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
         .logo-wrap { display: flex; align-items: center; }
         .logo-icon { fill: var(--orange); width: 56px; height: 56px; margin-right: -2px; }
         .logo-text { color: var(--text); font-size: 56px; font-weight: 400; letter-spacing: -4px; margin: 0; line-height: 1; }
         .logo-highlight { color: var(--orange); font-weight: 900; text-transform: uppercase; letter-spacing: -2px; }
 
-        .streak-display { display: flex; align-items: center; gap: 4px; color: var(--orange); font-weight: 800; font-size: 26px; }
+        .streak-display { display: flex; align-items: center; gap: 6px; color: var(--orange); font-weight: 800; font-size: 26px; }
 
-        .progress-bar-wrap { background: var(--item-bg); height: 8px; border-radius: 20px; margin-bottom: 35px; overflow: hidden; }
-        #progressBar { background: var(--orange); height: 100%; width: 0%; transition: width 0.8s ease; }
+        .progress-bar-wrap { background: var(--item-bg); height: 10px; border-radius: 20px; margin-bottom: 40px; overflow: hidden; }
+        #progressBar { background: var(--orange); height: 100%; width: 0%; transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
 
         select, input, #add-btn { 
             background: var(--item-bg); border: 1px solid var(--border); color: var(--text); 
@@ -72,35 +70,33 @@
 
         #add-btn { background: var(--orange); color: white; font-weight: 900; border: none; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; }
 
-        /* CLEAN LIST - NO ICONS */
         .habit-item { 
-            background: var(--item-bg); padding: 24px; border-radius: 24px; margin-bottom: 12px; 
+            background: var(--item-bg); padding: 24px; border-radius: 28px; margin-bottom: 15px; 
             display: flex; align-items: center; border: 1px solid var(--border); 
-            transition: all 0.3s ease;
         }
         
-        .habit-text { flex-grow: 1; margin: 0 20px; font-weight: 600; font-size: 21px; letter-spacing: -0.5px; }
-        
-        .habit-item.completed { opacity: 0.3; filter: grayscale(1); transform: scale(0.98); }
+        /* BULLETPROOF LIST ACCENTS */
+        .habit-accent { width: 12px; height: 12px; background: var(--orange); border-radius: 50%; margin-left: 15px; flex-shrink: 0; }
+        .habit-text { flex-grow: 1; margin: 0 20px; font-weight: 600; font-size: 22px; letter-spacing: -0.5px; }
+        .habit-item.completed { opacity: 0.25; filter: grayscale(1); }
 
         .check-btn { 
-            width: 38px; height: 38px; border: 2.5px solid var(--border); border-radius: 12px; 
+            width: 40px; height: 40px; border: 3px solid var(--border); border-radius: 14px; 
             background: none; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-            transition: background 0.2s ease;
+            color: white; font-size: 20px; font-weight: bold;
         }
         .completed .check-btn { background: var(--orange); border-color: var(--orange); }
 
-        .del-btn { 
-            background: none; border: none; color: var(--text); font-size: 24px; 
-            cursor: pointer; opacity: 0.3; padding: 5px 10px;
-        }
+        .del-btn { background: none; border: none; color: #777; font-size: 24px; cursor: pointer; padding: 10px; margin-right: -10px; }
 
-        .footer { margin-top: 50px; display: flex; gap: 30px; }
+        /* FOOTER ICONS RESTORED */
+        .footer { margin-top: 50px; display: flex; gap: 40px; }
         .footer-btn {
             background: var(--container-bg); border: 1px solid var(--border); color: var(--text);
-            width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-size: 24px;
+            width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
         }
+        .footer-svg { width: 30px; height: 30px; stroke: currentColor; stroke-width: 2.5; fill: none; }
     </style>
 </head>
 <body id="mainBody">
@@ -112,7 +108,7 @@
                 <h1 class="logo-text"><span class="logo-highlight">VIBE</span>track</h1>
             </div>
             <div class="streak-display">
-                <span>⚡</span>
+                <svg width="26" height="26" fill="var(--orange)" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
                 <span id="streakNum">0</span>
             </div>
         </div>
@@ -128,7 +124,7 @@
                 <option value="Training">Training</option>
                 <option value="custom">Custom...</option>
             </select>
-            <input type="text" id="hInput" style="display:none;" placeholder="Name your habit">
+            <input type="text" id="hInput" style="display:none;" placeholder="Habit name">
             <button id="add-btn">Add to Routine</button>
         </div>
 
@@ -136,9 +132,15 @@
     </div>
 
     <div class="footer">
-        <button class="footer-btn" onclick="toggleTheme()">🌓</button>
-        <button class="footer-btn" onclick="togglePhoto()">🖼️</button>
-        <button class="footer-btn" onclick="resetDay()">🔄</button>
+        <button class="footer-btn" onclick="toggleTheme()">
+            <svg class="footer-svg" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        </button>
+        <button class="footer-btn" onclick="togglePhoto()">
+            <svg class="footer-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        </button>
+        <button class="footer-btn" onclick="resetDay()">
+            <svg class="footer-svg" viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+        </button>
     </div>
 
     <script>
@@ -163,6 +165,7 @@
             if(!hSelect.value) return;
             let text = hSelect.value === 'custom' ? hInput.value : hSelect.value;
             if(!text) return;
+            // Removed the icon logic entirely to prevent ghost images/emojis
             habits.push({text: text, completed: false}); 
             render(); hInput.value=''; hSelect.value=''; hInput.style.display='none'; 
         };
@@ -175,8 +178,9 @@
                 el.className = `habit-item ${h.completed ? 'completed' : ''}`;
                 el.innerHTML = `
                     <button class="check-btn" onclick="toggle(${i})">
-                        ${h.completed ? '<span style="color:white; font-weight:bold;">✓</span>' : ''}
+                        ${h.completed ? '✓' : ''}
                     </button>
+                    <div class="habit-accent"></div>
                     <span class="habit-text">${h.text}</span>
                     <button class="del-btn" onclick="removeHabit(${i})">×</button>
                 `;
@@ -184,10 +188,7 @@
             });
             const percent = habits.length ? (habits.filter(h => h.completed).length / habits.length) * 100 : 0;
             document.getElementById('progressBar').style.width = percent + '%';
-            if(percent === 100 && habits.length > 0) {
-                confetti({particleCount:100, spread:70, origin:{y:0.8}, colors:['#ff6600']});
-                // Increment streak if not already counted today
-            }
+            if(percent === 100 && habits.length > 0) confetti({particleCount:100, spread:70, origin:{y:0.8}, colors:['#ff6600']});
             localStorage.setItem('vibeHabits', JSON.stringify(habits));
         }
 
