@@ -3,31 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VIBEtrack Boss</title>
+    <title>VIBEtrack Titan</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="https://img.icons8.com/ios-filled/512/ff6600/flash-on.png">
-
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <style>
         :root {
             --bg: #0c0c0c;
-            --container-bg: rgba(28, 28, 30, 0.9);
-            --item-bg: rgba(255, 255, 255, 0.06);
+            --container-bg: rgba(28, 28, 30, 0.92);
+            --item-bg: rgba(255, 255, 255, 0.07);
             --text: #ffffff;
             --orange: #ff6600;
-            --border: rgba(255, 255, 255, 0.12);
+            --border: rgba(255, 255, 255, 0.15);
             --overlay: rgba(0, 0, 0, 0.5);
         }
 
         [data-theme="light"] {
             --bg: #f2f2f7;
-            --container-bg: rgba(255, 255, 255, 0.95);
-            --item-bg: rgba(0, 0, 0, 0.04);
+            --container-bg: rgba(255, 255, 255, 0.96);
+            --item-bg: rgba(0, 0, 0, 0.05);
             --text: #1c1c1e;
-            --border: rgba(0, 0, 0, 0.1);
+            --border: rgba(0, 0, 0, 0.12);
             --overlay: rgba(255, 255, 255, 0.2);
         }
 
@@ -46,56 +45,55 @@
         }
 
         .container { 
-            width: 100%; max-width: 440px; z-index: 10; margin-top: 50px;
-            background: var(--container-bg); padding: 35px; border-radius: 44px; 
+            width: 100%; max-width: 460px; z-index: 10; margin-top: 60px;
+            background: var(--container-bg); padding: 40px; border-radius: 48px; 
             backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); 
-            border: 1px solid var(--border); box-shadow: 0 40px 80px rgba(0,0,0,0.4);
+            border: 1px solid var(--border); box-shadow: 0 40px 80px rgba(0,0,0,0.5);
         }
 
-        /* ICON SYSTEM */
-        .svg-icon { width: 24px; height: 24px; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; fill: none; vertical-align: middle; }
-
-        /* THE 52px BOSS LOGO */
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px; }
+        /* 200% PLUS LOGO */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
         .logo-wrap { display: flex; align-items: center; gap: 0px; }
-        .logo-icon { fill: var(--orange); width: 52px; height: 52px; margin-right: -2px; }
-        .logo-text { color: var(--text); font-size: 52px; font-weight: 400; letter-spacing: -3px; margin: 0; line-height: 1; }
+        .logo-icon { fill: var(--orange); width: 54px; height: 54px; margin-right: -1px; }
+        .logo-text { color: var(--text); font-size: 54px; font-weight: 400; letter-spacing: -3.5px; margin: 0; line-height: 1; }
         .logo-highlight { color: var(--orange); font-weight: 900; text-transform: uppercase; letter-spacing: -2px; }
 
-        .streak-display { display: flex; align-items: center; gap: 6px; color: var(--orange); font-weight: 800; font-size: 22px; }
+        .streak-display { display: flex; align-items: center; gap: 6px; color: var(--orange); font-weight: 800; font-size: 24px; }
 
-        .progress-bar-wrap { background: var(--item-bg); height: 8px; border-radius: 10px; margin-bottom: 35px; overflow: hidden; }
+        .progress-bar-wrap { background: var(--item-bg); height: 10px; border-radius: 12px; margin-bottom: 40px; overflow: hidden; }
         #progressBar { background: var(--orange); height: 100%; width: 0%; transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
 
         select, input, #add-btn { 
             background: var(--item-bg); border: 1px solid var(--border); color: var(--text); 
-            padding: 18px; border-radius: 18px; width: 100%; font-size: 17px; outline: none; margin-bottom: 12px;
-            -webkit-appearance: none; appearance: none;
+            padding: 20px; border-radius: 20px; width: 100%; font-size: 18px; outline: none; margin-bottom: 15px;
+            box-sizing: border-box; -webkit-appearance: none;
         }
 
-        #add-btn { background: var(--orange); color: white; font-weight: 800; border: none; cursor: pointer; text-transform: uppercase; letter-spacing: 1.5px; }
+        #add-btn { background: var(--orange); color: white; font-weight: 900; border: none; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; }
 
+        /* LIST & ICONS */
         .habit-item { 
-            background: var(--item-bg); padding: 20px; border-radius: 24px; margin-bottom: 15px; 
+            background: var(--item-bg); padding: 22px; border-radius: 26px; margin-bottom: 15px; 
             display: flex; align-items: center; border: 1px solid var(--border); 
             animation: slideIn 0.4s ease-out backwards;
         }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        .habit-icon-container { color: var(--text); opacity: 0.85; margin-left: 15px; display: flex; align-items: center; }
-        .habit-text { flex-grow: 1; margin-left: 15px; font-weight: 600; font-size: 19px; letter-spacing: -0.4px; }
+        .habit-icon-svg { width: 28px; height: 28px; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; fill: none; margin-left: 15px; }
+        .habit-text { flex-grow: 1; margin-left: 18px; font-weight: 600; font-size: 20px; letter-spacing: -0.5px; }
         .habit-item.completed { opacity: 0.25; filter: grayscale(1); }
 
         .check-btn { 
-            width: 32px; height: 32px; border: 2.5px solid var(--border); border-radius: 11px; 
-            background: none; display: flex; align-items: center; justify-content: center; transition: 0.3s;
+            width: 34px; height: 34px; border: 2.5px solid var(--border); border-radius: 12px; 
+            background: none; display: flex; align-items: center; justify-content: center;
         }
         .completed .check-btn { background: var(--orange); border-color: var(--orange); }
 
-        .footer { margin-top: 40px; display: flex; gap: 30px; }
+        .footer { margin-top: 45px; display: flex; gap: 35px; }
         .icon-toggle {
             background: var(--container-bg); border: 1px solid var(--border); color: var(--text);
-            width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -108,7 +106,7 @@
                 <h1 class="logo-text"><span class="logo-highlight">VIBE</span>track</h1>
             </div>
             <div class="streak-display">
-                <svg class="svg-icon" style="fill:var(--orange); stroke:none; width:22px;" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                <svg width="24" height="24" fill="var(--orange)" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
                 <span id="streakNum">0</span>
             </div>
         </div>
@@ -118,13 +116,13 @@
         <div class="input-section">
             <select id="hSelect">
                 <option value="">Choose Habit...</option>
-                <option value="droplet|Hydration">💧 Hydration</option>
-                <option value="book|Reading">📖 Reading</option>
-                <option value="wind|Meditation">🧘 Meditation</option>
-                <option value="dumbbell|Training">🏋️ Training</option>
-                <option value="sparkles|CUSTOM">✨ Custom...</option>
+                <option value="DROPS|Hydration">💧 Hydration</option>
+                <option value="BOOK|Reading">📖 Reading</option>
+                <option value="ZEN|Meditation">🧘 Meditation</option>
+                <option value="LIFT|Training">🏋️ Training</option>
+                <option value="MAGIC|CUSTOM">✨ Custom...</option>
             </select>
-            <input type="text" id="hInput" style="display:none;" placeholder="What's the goal?">
+            <input type="text" id="hInput" style="display:none;" placeholder="Custom Habit Name">
             <button id="add-btn">Add to Routine</button>
         </div>
 
@@ -132,20 +130,26 @@
     </div>
 
     <div class="footer">
-        <button class="icon-toggle" onclick="toggleTheme()"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
-        <button class="icon-toggle" onclick="togglePhoto()"><svg class="svg-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></button>
-        <button class="icon-toggle" onclick="resetDay()"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg></button>
+        <button class="icon-toggle" onclick="toggleTheme()">
+            <svg class="habit-icon-svg" style="margin:0" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        </button>
+        <button class="icon-toggle" onclick="togglePhoto()">
+            <svg class="habit-icon-svg" style="margin:0" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        </button>
+        <button class="icon-toggle" onclick="resetDay()">
+            <svg class="habit-icon-svg" style="margin:0" viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+        </button>
     </div>
 
     <script>
-        const iconPaths = {
-            droplet: '<path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5s-3 3.5-3 5.5a7 7 0 0 0 7 7Z"/>',
-            book: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
-            wind: '<path d="M17.7 7.7A2.5 2.5 0 1 1 20 12H3"/><path d="M9.6 4.6A2 2 0 1 1 11 8H3"/><path d="M12.6 19.4A2 2 0 1 0 14 16H3"/>',
-            dumbbell: '<path d="m6.5 6.5 11 11"/><path d="m21 21-1-1"/><path d="m3 3 1 1"/><path d="m18 22 4-4"/><path d="m2 6 4-4"/><path d="m3 10 7-7"/><path d="m14 21 7-7"/>',
-            sparkles: '<path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="m5 3 1 1"/><path d="m19 19 1 1"/><path d="m5 21 1-1"/><path d="m19 3 1 1"/>',
-            check: '<path d="M20 6 9 17l-5-5"/>',
-            trash: '<path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>'
+        const SVGS = {
+            DROPS: '<path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5s-3 3.5-3 5.5a7 7 0 0 0 7 7Z"/>',
+            BOOK: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
+            ZEN: '<path d="M12 10c-3.866 0-7 3.134-7 7s3.134 7 7 7 7-3.134 7-7-3.134-7-7-7z"/><path d="m14.97 3.03 2.12 2.12"/><path d="m9.03 3.03-2.12 2.12"/><path d="m3.03 9.03 2.12 2.12"/><path d="m20.97 9.03-2.12 2.12"/>',
+            LIFT: '<path d="m6.5 6.5 11 11"/><path d="m21 21-1-1"/><path d="m3 3 1 1"/><path d="m18 22 4-4"/><path d="m2 6 4-4"/><path d="m3 10 7-7"/><path d="m14 21 7-7"/>',
+            MAGIC: '<path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>',
+            CHECK: '<path d="M20 6 9 17l-5-5"/>',
+            DEL: '<path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>'
         };
 
         let habits = JSON.parse(localStorage.getItem('vibeHabits')) || [];
@@ -163,14 +167,13 @@
 
         const hSelect = document.getElementById('hSelect');
         const hInput = document.getElementById('hInput');
-        hSelect.onchange = () => hInput.style.display = hSelect.value.includes('CUSTOM') ? 'block' : 'none';
+        hSelect.onchange = () => hInput.style.display = hSelect.value.includes('MAGIC') ? 'block' : 'none';
 
         document.getElementById('add-btn').onclick = () => {
-            let val = hSelect.value;
-            if(!val) return;
-            let [iconKey, text] = val.split('|');
-            if(iconKey === 'sparkles') text = hInput.value || "New Habit";
-            habits.push({icon: iconKey, text: text, completed: false}); 
+            if(!hSelect.value) return;
+            let [key, text] = hSelect.value.split('|');
+            if(key === 'MAGIC') text = hInput.value || "Custom Habit";
+            habits.push({icon: key, text: text, completed: false}); 
             render(); hInput.value=''; hSelect.value=''; hInput.style.display='none'; 
         };
 
@@ -182,14 +185,12 @@
                 el.className = `habit-item ${h.completed ? 'completed' : ''}`;
                 el.innerHTML = `
                     <button class="check-btn" onclick="toggle(${i})">
-                        ${h.completed ? `<svg class="svg-icon" style="stroke:white; width:18px;">${iconPaths.check}</svg>` : ''}
+                        ${h.completed ? `<svg class="habit-icon-svg" style="stroke:white; width:20px; margin:0;">${SVGS.CHECK}</svg>` : ''}
                     </button>
-                    <div class="habit-icon-container">
-                        <svg class="svg-icon">${iconPaths[h.icon] || iconPaths.sparkles}</svg>
-                    </div>
+                    <svg class="habit-icon-svg">${SVGS[h.icon] || SVGS.MAGIC}</svg>
                     <span class="habit-text">${h.text}</span>
                     <button style="background:none; border:none; color:#777; cursor:pointer;" onclick="removeHabit(${i})">
-                        <svg class="svg-icon" style="width:16px;">${iconPaths.trash}</svg>
+                        <svg class="habit-icon-svg" style="width:18px;">${SVGS.DEL}</svg>
                     </button>
                 `;
                 list.appendChild(el);
