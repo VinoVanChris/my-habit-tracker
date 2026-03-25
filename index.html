@@ -3,165 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VibeTrack</title>
+    <title>VibeTrack Pro</title>
     <style>
+        :root {
+            --charcoal: #1a1a1a;
+            --orange: #ff6600;
+            --white: #ffffff;
+            --grey: #262626;
+        }
+
         body {
-            background-color: #1a1a1a; 
-            color: #ffffff; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--charcoal);
+            color: var(--white);
+            font-family: -apple-system, system-ui, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 40px 20px;
+            padding: env(safe-area-inset-top) 20px;
             margin: 0;
         }
 
-        h1 {
-            color: #ff6600; 
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 30px;
-            font-size: 24px;
-        }
-
-        .input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            width: 100%;
-            max-width: 400px;
-        }
-
-        input {
-            flex-grow: 1;
+        .container { width: 100%; max-width: 400px; margin-top: 20px; }
+        h1 { color: var(--orange); text-align: center; letter-spacing: 2px; font-size: 28px; margin-bottom: 10px; }
+        
+        .progress-container {
             background: #333;
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        #progressBar {
+            background: var(--orange);
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 0 10px rgba(255, 102, 0, 0.5);
+        }
+
+        /* NEW: Dropdown and Input Group */
+        .input-area {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 25px;
+            background: #222;
+            padding: 15px;
+            border-radius: 15px;
+        }
+
+        select, input {
+            background: var(--grey);
             border: 1px solid #444;
             color: white;
-            padding: 15px;
-            border-radius: 12px;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 16px;
             outline: none;
-            font-size: 16px; /* Prevents iOS zoom on focus */
         }
 
         button#add-btn {
-            background-color: #ff6600;
+            background: var(--orange);
             color: white;
             border: none;
-            padding: 0 20px;
-            border-radius: 12px;
+            padding: 12px;
+            border-radius: 10px;
             font-weight: bold;
             cursor: pointer;
         }
 
-        .habit-list {
-            width: 100%;
-            max-width: 400px;
-        }
-
+        /* Habit Items */
         .habit-item {
-            background: #262626;
-            padding: 15px;
-            border-radius: 12px;
+            background: var(--grey);
+            padding: 18px;
+            border-radius: 15px;
             margin-bottom: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-left: 5px solid #ff6600;
-            transition: all 0.3s ease;
+            border-left: 5px solid var(--orange);
+            animation: slideIn 0.3s ease;
         }
 
-        .habit-item.completed {
-            opacity: 0.4;
-            border-left: 5px solid #444;
-        }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
 
-        .habit-text {
-            flex-grow: 1;
-            margin-right: 10px;
-        }
+        .habit-item.completed { opacity: 0.3; border-left-color: #444; }
+        .check-btn { background: none; border: 2px solid var(--orange); color: var(--orange); border-radius: 10px; width: 35px; height: 35px; }
 
-        .completed .habit-text {
-            text-decoration: line-through;
-        }
-
-        .actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .check-btn, .delete-btn {
-            background: none;
-            border: 2px solid #ff6600;
-            color: #ff6600;
-            border-radius: 8px;
-            padding: 5px 10px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .delete-btn {
-            border-color: #666;
-            color: #666;
-        }
     </style>
 </head>
 <body>
 
-    <h1>Daily Habits</h1>
+    <div class="container">
+        <h1>VIBETRACK</h1>
+        
+        <div class="progress-container">
+            <div id="progressBar"></div>
+        </div>
 
-    <div class="input-group">
-        <input type="text" id="habitInput" placeholder="New habit..." autocomplete="off">
-        <button id="add-btn">ADD</button>
+        <div class="input-area">
+            <select id="habitSelect">
+                <option value="">Choose a habit...</option>
+                <option value="💧 Drink Water">💧 Drink Water</option>
+                <option value="📖 Read 10 Pages">📖 Read 10 Pages</option>
+                <option value="🧘 Meditation">🧘 Meditation</option>
+                <option value="🏋️ Workout">🏋️ Workout</option>
+                <option value="🍎 Eat Healthy">🍎 Eat Healthy</option>
+                <option value="CUSTOM">➕ Custom...</option>
+            </select>
+
+            <input type="text" id="habitInput" placeholder="Enter custom habit..." style="display:none;">
+            
+            <button id="add-btn">ADD HABIT</button>
+        </div>
+
+        <div id="habitList"></div>
     </div>
 
-    <div class="habit-list" id="habitList"></div>
-
     <script>
+        const select = document.getElementById('habitSelect');
         const input = document.getElementById('habitInput');
         const btn = document.getElementById('add-btn');
         const list = document.getElementById('habitList');
+        const prog = document.getElementById('progressBar');
 
-        // 1. Load from LocalStorage on startup
-        let habits = JSON.parse(localStorage.getItem('myHabits')) || [];
+        let habits = JSON.parse(localStorage.getItem('vibeHabits')) || [];
 
-        function renderHabits() {
-            list.innerHTML = '';
-            habits.forEach((habit, index) => {
-                const habitItem = document.createElement('div');
-                habitItem.className = `habit-item ${habit.completed ? 'completed' : ''}`;
-                habitItem.innerHTML = `
-                    <span class="habit-text">${habit.text}</span>
-                    <div class="actions">
-                        <button class="check-btn" onclick="toggleHabit(${index})">✓</button>
-                        <button class="delete-btn" onclick="deleteHabit(${index})">×</button>
-                    </div>
-                `;
-                list.appendChild(habitItem);
-            });
-            // 2. Save to LocalStorage whenever we render
-            localStorage.setItem('myHabits', JSON.stringify(habits));
-        }
-
-        btn.addEventListener('click', () => {
-            if (input.value.trim()) {
-                habits.push({ text: input.value, completed: false });
-                input.value = '';
-                renderHabits();
-            }
+        // Show/Hide custom input based on selection
+        select.addEventListener('change', () => {
+            input.style.display = (select.value === 'CUSTOM') ? 'block' : 'none';
         });
 
-        window.toggleHabit = (index) => {
-            habits[index].completed = !habits[index].completed;
-            renderHabits();
+        function updateProgress() {
+            if (habits.length === 0) { prog.style.width = '0%'; return; }
+            const done = habits.filter(h => h.completed).length;
+            prog.style.width = ((done / habits.length) * 100) + '%';
+        }
+
+        function render() {
+            list.innerHTML = '';
+            habits.forEach((h, i) => {
+                const el = document.createElement('div');
+                el.className = `habit-item ${h.completed ? 'completed' : ''}`;
+                el.innerHTML = `<span>${h.text}</span><button class="check-btn" onclick="toggle(${i})">${h.completed ? '✓' : ''}</button>`;
+                list.appendChild(el);
+            });
+            localStorage.setItem('vibeHabits', JSON.stringify(habits));
+            updateProgress();
+        }
+
+        btn.onclick = () => {
+            let finalValue = select.value === 'CUSTOM' ? input.value : select.value;
+            
+            if (finalValue && finalValue !== 'CUSTOM') {
+                habits.push({text: finalValue, completed: false});
+                input.value = '';
+                select.value = '';
+                input.style.display = 'none';
+                render();
+            }
         };
 
-        window.deleteHabit = (index) => {
-            habits.splice(index, 1);
-            renderHabits();
+        window.toggle = (i) => {
+            habits[i].completed = !habits[i].completed;
+            render();
         };
 
-        // Initial render
-        renderHabits();
+        render();
     </script>
 </body>
 </html>
