@@ -31,6 +31,7 @@
             --overlay: rgba(255, 255, 255, 0.2);
         }
 
+        /* ANIMATIONS */
         @keyframes slideIn {
             from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
@@ -72,14 +73,11 @@
             box-shadow: 0 30px 60px rgba(0,0,0,0.4);
         }
 
-        /* HEADER & LARGER LOGO */
+        /* HEADER & DYNAMIC TYPOGRAPHY */
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        
-        /* NO SPACE AND 200% LARGER */
-        .logo-wrap { display: flex; align-items: center; gap: 0px; }
-        
-        .logo-text { color: var(--text); font-size: 40px; font-weight: 400; letter-spacing: -1.5px; margin: 0; line-height: 1; }
-        .logo-highlight { color: var(--orange); font-weight: 900; text-transform: uppercase; letter-spacing: -0.5px; }
+        .logo-wrap { display: flex; align-items: center; gap: 8px; }
+        .logo-text { color: var(--text); font-size: 20px; font-weight: 400; letter-spacing: -0.5px; margin: 0; }
+        .logo-highlight { color: var(--orange); font-weight: 800; text-transform: uppercase; letter-spacing: 0px; }
 
         .streak-display { display: flex; align-items: center; gap: 5px; color: var(--orange); font-weight: 700; font-size: 16px; }
 
@@ -91,16 +89,18 @@
             background: var(--item-bg); border: 1px solid var(--border); color: var(--text); 
             padding: 16px; border-radius: 16px; width: 100%; font-size: 15px; outline: none; transition: all 0.2s;
         }
-        select { -webkit-appearance: none; appearance: none; }
+        select { -webkit-appearance: none; appearance: none; } /* Native select styling fix */
         
         #add-btn { background: var(--orange); color: white; font-weight: 700; margin: 15px 0 25px 0; cursor: pointer; border: none; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
         #add-btn:active { transform: scale(0.96); }
 
+        /* HABIT ITEMS AND VECTORS */
         .habit-item { 
             background: var(--item-bg); padding: 18px; border-radius: 20px; margin-bottom: 12px; 
             display: flex; align-items: center; border: 1px solid var(--border); 
             animation: slideIn 0.4s ease backwards;
         }
+        .habit-icon-wrap { width: 20px; text-align: center; } /* Keeps text aligned even if emoji/icon width varies */
         .habit-text { flex-grow: 1; margin-left: 15px; font-weight: 500; letter-spacing: -0.3px; font-size: 16px; }
         .habit-item.completed { opacity: 0.3; filter: grayscale(1); }
 
@@ -110,9 +110,9 @@
         }
         .completed .check-btn { background: var(--orange); border-color: var(--orange); }
 
+        /* Icon styling */
         .icon-svg { fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-        /* DYNAMIC SIZE FOR LOGO ICON */
-        .logo-icon { fill: var(--orange); stroke: none; width: 40px; height: 40px; }
+        .logo-icon { fill: var(--orange); stroke: none; } /* Special style for solid logo */
 
         .footer { margin-top: 30px; display: flex; gap: 20px; }
         .icon-toggle {
@@ -128,7 +128,7 @@
     <div class="container">
         <div class="header">
             <div class="logo-wrap">
-                <svg class="logo-icon" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                <svg class="logo-icon" width="20" height="20" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
                 <h1 class="logo-text"><span class="logo-highlight">VIBE</span>track</h1>
             </div>
 
@@ -143,11 +143,11 @@
         <div class="input-section">
             <select id="hSelect">
                 <option value="">Choose Habit</option>
-                <option value="Hydration">Hydration</option>
-                <option value="Training">Training</option>
-                <option value="Reading">Reading</option>
-                <option value="Deep Work">Deep Work</option>
-                <option value="CUSTOM">Custom...</option>
+                <option value="💧 Hydration">Hydration</option>
+                <option value="📖 Reading">Reading</option>
+                <option value="🧘 Meditation">Meditation</option>
+                <option value="🤸 Exercise">Exercise</option>
+                <option value="⚙️ CUSTOM">Custom...</option>
             </select>
             <input type="text" id="hInput" style="display:none;" placeholder="What's the goal?">
             <button id="add-btn">Add to Routine</button>
@@ -201,10 +201,10 @@
 
         const hSelect = document.getElementById('hSelect');
         const hInput = document.getElementById('hInput');
-        hSelect.onchange = () => hInput.style.display = hSelect.value === 'CUSTOM' ? 'block' : 'none';
+        hSelect.onchange = () => hInput.style.display = hSelect.value === '⚙️ CUSTOM' ? 'block' : 'none';
 
         document.getElementById('add-btn').onclick = () => {
-            let val = hSelect.value === 'CUSTOM' ? hInput.value : hSelect.value;
+            let val = hSelect.value === '⚙️ CUSTOM' ? hInput.value : hSelect.value;
             if(val && val !== 'Choose Habit') { 
                 habits.push({text: val, completed: false}); 
                 render(); 
@@ -216,14 +216,19 @@
             const list = document.getElementById('hList');
             list.innerHTML = '';
             habits.forEach((h, i) => {
+                const parts = h.text.split(' ');
+                const icon = parts.shift();
+                const text = parts.join(' ');
+
                 const el = document.createElement('div');
                 el.className = `habit-item ${h.completed ? 'completed' : ''}`;
                 el.style.animationDelay = (i * 0.05) + 's';
                 el.innerHTML = `
                     <button class="check-btn" onclick="toggle(${i})">
-                        ${h.completed ? '<svg class="icon-svg" style="color:white; stroke-width:3;" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>' : ''}
+                        ${h.completed ? '<svg class="icon-svg" style="color:white; stroke-width:3;" width="16" height="16" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>' : ''}
                     </button>
-                    <span class="habit-text">${h.text}</span>
+                    <div class="habit-icon-wrap">${icon}</div>
+                    <span class="habit-text">${text}</span>
                     <button style="background:none; border:none; color:#555; cursor:pointer;" onclick="removeHabit(${i})">✕</button>
                 `;
                 list.appendChild(el);
