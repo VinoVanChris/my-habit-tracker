@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>VibeTrack Pro</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
             --charcoal: #1a1a1a;
@@ -20,7 +21,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: env(safe-area-inset-top) 20px;
+            padding: env(safe-area-inset-top) 20px 40px 20px;
             margin: 0;
         }
 
@@ -29,17 +30,19 @@
         
         .progress-container {
             background: #333;
-            height: 8px;
-            border-radius: 4px;
+            height: 12px;
+            border-radius: 6px;
             margin-bottom: 25px;
             overflow: hidden;
+            border: 1px solid #444;
         }
 
         #progressBar {
-            background: var(--orange);
+            background: linear-gradient(90deg, var(--orange), #ff9900);
             height: 100%;
             width: 0%;
-            transition: width 0.4s ease;
+            transition: width 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 0 15px rgba(255, 102, 0, 0.4);
         }
 
         .input-area {
@@ -50,6 +53,7 @@
             background: #222;
             padding: 15px;
             border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
         select, input {
@@ -59,6 +63,7 @@
             padding: 15px;
             border-radius: 10px;
             font-size: 16px;
+            -webkit-appearance: none; /* Fixes iOS styling */
         }
 
         button#add-btn {
@@ -68,7 +73,9 @@
             padding: 15px;
             border-radius: 10px;
             font-weight: bold;
+            transition: transform 0.1s;
         }
+        button#add-btn:active { transform: scale(0.98); }
 
         .habit-item {
             background: var(--grey);
@@ -78,29 +85,47 @@
             display: flex;
             align-items: center;
             border-left: 5px solid var(--orange);
+            transition: all 0.3s ease;
         }
 
-        .habit-text { flex-grow: 1; margin-left: 10px; }
-        .habit-item.completed { opacity: 0.4; border-left-color: #444; }
+        .habit-text { flex-grow: 1; margin-left: 15px; font-size: 17px; }
+        .habit-item.completed { opacity: 0.4; border-left-color: #444; transform: scale(0.98); }
 
-        .btn-group { display: flex; gap: 10px; }
+        .btn-group { display: flex; gap: 8px; }
         
-        /* Delete Button Style */
         .del-btn { 
-            background: none; 
-            border: 1px solid var(--red); 
+            background: #333; 
+            border: none; 
             color: var(--red); 
             border-radius: 8px; 
-            padding: 5px 10px;
-            font-size: 12px;
+            padding: 8px 12px;
+            font-size: 11px;
+            font-weight: bold;
         }
 
         .check-btn { 
             background: none; 
             border: 2px solid var(--orange); 
             color: var(--orange); 
-            border-radius: 10px; 
-            width: 35px; height: 35px; 
+            border-radius: 12px; 
+            width: 40px; height: 40px; 
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .reset-area {
+            margin-top: 30px;
+            text-align: center;
+        }
+        .reset-btn {
+            background: none;
+            border: 1px solid #444;
+            color: #888;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 13px;
         }
     </style>
 </head>
@@ -117,13 +142,18 @@
                 <option value="📖 Read 10 Pages">📖 Read 10 Pages</option>
                 <option value="🧘 Meditation">🧘 Meditation</option>
                 <option value="🏋️ Workout">🏋️ Workout</option>
+                <option value="🍎 Eat Healthy">🍎 Eat Healthy</option>
                 <option value="CUSTOM">➕ Custom...</option>
             </select>
-            <input type="text" id="habitInput" placeholder="Enter habit name..." style="display:none;">
+            <input type="text" id="habitInput" placeholder="Enter custom habit..." style="display:none;">
             <button id="add-btn">ADD HABIT</button>
         </div>
 
         <div id="habitList"></div>
+
+        <div class="reset-area">
+            <button class="reset-btn" onclick="resetDay()">Reset Checks for Tomorrow</button>
+        </div>
     </div>
 
     <script>
@@ -139,10 +169,25 @@
             input.style.display = (select.value === 'CUSTOM') ? 'block' : 'none';
         });
 
+        function fireConfetti() {
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#ff6600', '#ffffff', '#ffbb00']
+            });
+        }
+
         function updateProgress() {
             if (habits.length === 0) { prog.style.width = '0%'; return; }
             const done = habits.filter(h => h.completed).length;
-            prog.style.width = ((done / habits.length) * 100) + '%';
+            const percentage = (done / habits.length) * 100;
+            prog.style.width = percentage + '%';
+
+            // Trigger confetti if we just hit 100%
+            if (percentage === 100 && habits.length > 0) {
+                fireConfetti();
+            }
         }
 
         function render() {
@@ -172,10 +217,20 @@
             }
         };
 
-        window.toggle = (i) => { habits[i].completed = !habits[i].completed; render(); };
+        window.toggle = (i) => { 
+            habits[i].completed = !habits[i].completed; 
+            render(); 
+        };
         
         window.removeHabit = (i) => {
-            habits.splice(i, 1); // Removes the item from the list
+            if(confirm("Delete this habit?")) {
+                habits.splice(i, 1);
+                render();
+            }
+        };
+
+        window.resetDay = () => {
+            habits.forEach(h => h.completed = false);
             render();
         };
 
