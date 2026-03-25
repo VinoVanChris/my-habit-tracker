@@ -3,38 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VibeTrack Pro</title>
+    <title>VibeTrack Elite</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="https://img.icons8.com/ios-filled/512/ff6600/flash-on.png">
 
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <style>
         :root {
             --bg: #0c0c0c;
-            --container-bg: rgba(24, 24, 24, 0.85);
-            --item-bg: rgba(255, 255, 255, 0.04);
+            --container-bg: rgba(24, 24, 24, 0.88);
+            --item-bg: rgba(255, 255, 255, 0.05);
             --text: #ffffff;
             --orange: #ff6600;
             --border: rgba(255, 255, 255, 0.1);
-            --overlay: rgba(0, 0, 0, 0.55);
+            --overlay: rgba(0, 0, 0, 0.6);
         }
 
         [data-theme="light"] {
             --bg: #f2f2f7;
-            --container-bg: rgba(255, 255, 255, 0.9);
-            --item-bg: rgba(0, 0, 0, 0.03);
+            --container-bg: rgba(255, 255, 255, 0.95);
+            --item-bg: rgba(0, 0, 0, 0.04);
             --text: #1c1c1e;
-            --border: rgba(0, 0, 0, 0.08);
-            --overlay: rgba(255, 255, 255, 0.2);
-        }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
+            --border: rgba(0, 0, 0, 0.1);
+            --overlay: rgba(255, 255, 255, 0.3);
         }
 
         body {
@@ -53,51 +48,54 @@
         }
 
         .container { 
-            width: 100%; max-width: 420px; z-index: 10; margin-top: 40px;
-            background: var(--container-bg); padding: 30px; border-radius: 35px; 
-            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); 
-            border: 1px solid var(--border); box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+            width: 100%; max-width: 440px; z-index: 10; margin-top: 50px;
+            background: var(--container-bg); padding: 35px; border-radius: 40px; 
+            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); 
+            border: 1px solid var(--border); box-shadow: 0 40px 80px rgba(0,0,0,0.5);
         }
 
-        /* LOGO: 200% SIZE & NO SPACE */
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        /* THE 200% LOGO */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px; }
         .logo-wrap { display: flex; align-items: center; gap: 0px; }
-        .logo-icon { fill: var(--orange); width: 44px; height: 44px; }
-        .logo-text { color: var(--text); font-size: 42px; font-weight: 400; letter-spacing: -2px; margin: 0; line-height: 1; }
-        .logo-highlight { color: var(--orange); font-weight: 900; text-transform: uppercase; letter-spacing: -1px; }
+        .logo-icon { fill: var(--orange); width: 48px; height: 48px; }
+        .logo-text { color: var(--text); font-size: 46px; font-weight: 400; letter-spacing: -2.5px; margin: 0; line-height: 1; }
+        .logo-highlight { color: var(--orange); font-weight: 900; text-transform: uppercase; letter-spacing: -1.5px; }
 
-        .streak-display { display: flex; align-items: center; gap: 6px; color: var(--orange); font-weight: 700; font-size: 18px; }
+        .streak-display { display: flex; align-items: center; gap: 6px; color: var(--orange); font-weight: 800; font-size: 20px; }
 
-        .progress-bar-wrap { background: var(--item-bg); height: 6px; border-radius: 10px; margin-bottom: 30px; overflow: hidden; }
-        #progressBar { background: var(--orange); height: 100%; width: 0%; transition: width 0.8s ease; }
+        .progress-bar-wrap { background: var(--item-bg); height: 8px; border-radius: 10px; margin-bottom: 35px; overflow: hidden; }
+        #progressBar { background: var(--orange); height: 100%; width: 0%; transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
 
         select, input, #add-btn { 
             background: var(--item-bg); border: 1px solid var(--border); color: var(--text); 
-            padding: 16px; border-radius: 16px; width: 100%; font-size: 16px; outline: none; margin-bottom: 10px;
+            padding: 18px; border-radius: 18px; width: 100%; font-size: 17px; outline: none; margin-bottom: 12px;
+            box-sizing: border-box;
         }
-        #add-btn { background: var(--orange); color: white; font-weight: 800; border: none; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; }
+        #add-btn { background: var(--orange); color: white; font-weight: 800; border: none; cursor: pointer; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 5px; }
 
-        /* CLEAN LINE HABITS */
+        /* LIST STYLING */
         .habit-item { 
-            background: var(--item-bg); padding: 18px; border-radius: 20px; margin-bottom: 12px; 
+            background: var(--item-bg); padding: 20px; border-radius: 22px; margin-bottom: 15px; 
             display: flex; align-items: center; border: 1px solid var(--border); 
-            animation: slideIn 0.3s ease backwards;
+            animation: slideIn 0.4s ease-out backwards;
         }
-        .habit-icon-wrap { color: var(--text); opacity: 0.8; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
-        .habit-text { flex-grow: 1; margin-left: 15px; font-weight: 500; font-size: 17px; }
-        .habit-item.completed { opacity: 0.25; filter: grayscale(1); }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .habit-icon-wrap { color: var(--text); width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+        .habit-text { flex-grow: 1; margin-left: 18px; font-weight: 600; font-size: 18px; letter-spacing: -0.3px; }
+        .habit-item.completed { opacity: 0.3; filter: grayscale(1); }
 
         .check-btn { 
-            width: 28px; height: 28px; border: 2px solid var(--border); border-radius: 9px; 
-            background: none; display: flex; align-items: center; justify-content: center; transition: 0.2s;
+            width: 30px; height: 30px; border: 2.5px solid var(--border); border-radius: 10px; 
+            background: none; display: flex; align-items: center; justify-content: center; transition: 0.3s;
         }
         .completed .check-btn { background: var(--orange); border-color: var(--orange); }
 
-        .footer { margin-top: 30px; display: flex; gap: 20px; }
+        .footer { margin-top: 40px; display: flex; gap: 25px; }
         .icon-toggle {
             background: var(--container-bg); border: 1px solid var(--border); color: var(--text);
-            width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            backdrop-filter: blur(10px); cursor: pointer;
+            width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            backdrop-filter: blur(15px); cursor: pointer;
         }
     </style>
 </head>
@@ -110,7 +108,7 @@
                 <h1 class="logo-text"><span class="logo-highlight">VIBE</span>track</h1>
             </div>
             <div class="streak-display">
-                <i data-lucide="zap" style="width:18px; fill:var(--orange); color:var(--orange)"></i>
+                <i data-lucide="zap" style="fill:var(--orange); width:22px; height:22px;"></i>
                 <span id="streakNum">0</span>
             </div>
         </div>
@@ -119,15 +117,15 @@
         
         <div class="input-section">
             <select id="hSelect">
-                <option value="">Choose Habit</option>
-                <option value="droplets|Hydration">Hydration</option>
-                <option value="book-open|Reading">Reading</option>
-                <option value="flower-2|Meditation">Meditation</option>
-                <option value="dumbbell|Training">Training</option>
-                <option value="sparkles|CUSTOM">Custom...</option>
+                <option value="">Choose Habit...</option>
+                <option value="droplets|Hydration">💧 Hydration</option>
+                <option value="book-open|Reading">📖 Reading</option>
+                <option value="wind|Meditation">🧘 Meditation</option>
+                <option value="dumbbell|Training">🏋️ Training</option>
+                <option value="sparkles|CUSTOM">✨ Custom...</option>
             </select>
-            <input type="text" id="hInput" style="display:none;" placeholder="Habit name...">
-            <button id="add-btn">ADD TO ROUTINE</button>
+            <input type="text" id="hInput" style="display:none;" placeholder="Enter custom habit name...">
+            <button id="add-btn">Add to Routine</button>
         </div>
 
         <div id="hList"></div>
@@ -145,6 +143,12 @@
         let usePhoto = localStorage.getItem('vibePhoto') === 'true';
         let streak = parseInt(localStorage.getItem('vibeStreak')) || 0;
 
+        function refreshIcons() {
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+        }
+
         function updateUI() {
             document.documentElement.setAttribute('data-theme', theme);
             const body = document.getElementById('mainBody');
@@ -156,7 +160,7 @@
                 body.style.backgroundImage = 'none';
             }
             document.getElementById('streakNum').innerText = streak;
-            lucide.createIcons();
+            refreshIcons();
         }
 
         const hSelect = document.getElementById('hSelect');
@@ -184,20 +188,20 @@
                 el.style.animationDelay = (i * 0.05) + 's';
                 el.innerHTML = `
                     <button class="check-btn" onclick="toggle(${i})">
-                        ${h.completed ? '<i data-lucide="check" style="color:white; width:16px; height:16px;"></i>' : ''}
+                        ${h.completed ? '<i data-lucide="check" style="stroke:white; width:18px; height:18px;"></i>' : ''}
                     </button>
                     <div class="habit-icon-wrap"><i data-lucide="${h.icon || 'circle'}"></i></div>
                     <span class="habit-text">${h.text}</span>
-                    <button style="background:none; border:none; color:#666; cursor:pointer;" onclick="removeHabit(${i})"><i data-lucide="x" style="width:16px;"></i></button>
+                    <button style="background:none; border:none; color:#777; cursor:pointer;" onclick="removeHabit(${i})"><i data-lucide="trash-2" style="width:18px;"></i></button>
                 `;
                 list.appendChild(el);
             });
             const done = habits.filter(h => h.completed).length;
             const percent = habits.length ? (done/habits.length)*100 : 0;
             document.getElementById('progressBar').style.width = percent + '%';
-            if(percent === 100 && habits.length > 0) confetti({particleCount:80, spread:60, origin:{y:0.7}, colors:['#ff6600']});
+            if(percent === 100 && habits.length > 0) confetti({particleCount:100, spread:70, origin:{y:0.8}, colors:['#ff6600']});
             localStorage.setItem('vibeHabits', JSON.stringify(habits));
-            lucide.createIcons();
+            refreshIcons();
         }
 
         window.toggle = (i) => { habits[i].completed = !habits[i].completed; render(); };
@@ -206,8 +210,13 @@
         window.togglePhoto = () => { usePhoto = !usePhoto; localStorage.setItem('vibePhoto', usePhoto); updateUI(); };
         window.resetDay = () => { habits.forEach(h => h.completed = false); render(); };
 
-        updateUI();
-        render();
+        // Initial setup
+        document.addEventListener('DOMContentLoaded', () => {
+            updateUI();
+            render();
+        });
+        // Extra check for script loading
+        window.onload = refreshIcons;
     </script>
 </body>
 </html>
