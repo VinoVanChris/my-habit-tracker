@@ -3,26 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VibeTrack Pro</title>
+    <title>VibeTrack</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="https://img.icons8.com/ios-filled/512/ff6600/flash-on.png">
+
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
     <style>
         :root {
-            --bg: #121212;
-            --container-bg: rgba(28, 28, 28, 0.9);
-            --item-bg: rgba(255, 255, 255, 0.05);
+            --bg: #0c0c0c;
+            --container-bg: rgba(24, 24, 24, 0.85);
+            --item-bg: rgba(255, 255, 255, 0.04);
             --text: #ffffff;
             --orange: #ff6600;
             --border: rgba(255, 255, 255, 0.1);
-            --overlay: rgba(0, 0, 0, 0.5);
+            --overlay: rgba(0, 0, 0, 0.55);
         }
 
         [data-theme="light"] {
-            --bg: #f8f9fa;
-            --container-bg: rgba(255, 255, 255, 0.95);
+            --bg: #f2f2f7;
+            --container-bg: rgba(255, 255, 255, 0.9);
             --item-bg: rgba(0, 0, 0, 0.03);
-            --text: #1a1a1a;
+            --text: #1c1c1e;
             --border: rgba(0, 0, 0, 0.08);
             --overlay: rgba(255, 255, 255, 0.2);
+        }
+
+        /* ANIMATIONS */
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 5px var(--orange); }
+            50% { box-shadow: 0 0 20px var(--orange); }
+            100% { box-shadow: 0 0 5px var(--orange); }
         }
 
         body {
@@ -31,148 +49,67 @@
             background-position: center;
             background-attachment: fixed;
             color: var(--text);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
             padding: env(safe-area-inset-top) 20px 40px 20px;
             margin: 0;
-            transition: all 0.4s ease;
+            transition: background 0.5s ease;
         }
 
         body.has-photo::before {
             content: "";
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--overlay);
-            z-index: -1;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--overlay); z-index: -1;
         }
 
         .container { 
-            width: 100%; 
-            max-width: 400px; 
-            z-index: 10; 
-            margin-top: 40px;
-            background: var(--container-bg); 
-            padding: 30px; 
-            border-radius: 32px; 
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px); 
-            border: 1px solid var(--border); 
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-            box-sizing: border-box;
+            width: 100%; max-width: 400px; z-index: 10; margin-top: 40px;
+            background: var(--container-bg); padding: 30px; border-radius: 35px; 
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); 
+            border: 1px solid var(--border);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
         }
 
-        .header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 25px;
-        }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        h1 { color: var(--orange); letter-spacing: 1px; font-size: 22px; margin: 0; font-weight: 800; }
 
-        h1 { 
-            color: var(--orange); 
-            letter-spacing: 2px; 
-            font-size: 20px; 
-            margin: 0; 
-            font-weight: 800;
-            text-transform: uppercase;
-        }
+        .streak-display { display: flex; align-items: center; gap: 5px; color: var(--orange); font-weight: 700; font-size: 16px; }
 
-        .streak-display {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-weight: 600;
-            font-size: 15px;
-            color: var(--orange);
-        }
+        .progress-bar-wrap { background: var(--item-bg); height: 6px; border-radius: 10px; margin-bottom: 30px; overflow: hidden; }
+        #progressBar { background: var(--orange); height: 100%; width: 0%; transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .full-glow #progressBar { animation: pulseGlow 2s infinite; }
 
-        .progress-bar-wrap { 
-            background: var(--item-bg); 
-            height: 6px; 
-            border-radius: 10px; 
-            margin-bottom: 30px; 
-            overflow: hidden; 
+        select, input, #add-btn { 
+            background: var(--item-bg); border: 1px solid var(--border); color: var(--text); 
+            padding: 16px; border-radius: 16px; width: 100%; font-size: 15px; outline: none; transition: all 0.2s;
         }
-
-        #progressBar { 
-            background: var(--orange); 
-            height: 100%; width: 0%; 
-            transition: width 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); 
-        }
-
-        select, input { 
-            background: var(--item-bg); 
-            border: 1px solid var(--border); 
-            color: var(--text); 
-            padding: 14px; 
-            border-radius: 14px; 
-            width: 100%; 
-            box-sizing: border-box; 
-            margin-bottom: 12px; 
-            font-size: 15px;
-            outline: none;
-            -webkit-appearance: none;
-        }
-
-        #add-btn { 
-            background: var(--orange); 
-            color: white; 
-            border: none; 
-            padding: 14px; 
-            border-radius: 14px; 
-            width: 100%; 
-            font-weight: 700; 
-            font-size: 14px;
-            cursor: pointer;
-            margin-bottom: 25px;
-        }
+        #add-btn { background: var(--orange); color: white; font-weight: 700; margin: 15px 0 25px 0; cursor: pointer; border: none; }
+        #add-btn:active { transform: scale(0.96); }
 
         .habit-item { 
-            background: var(--item-bg); 
-            padding: 16px; 
-            border-radius: 18px; 
-            margin-bottom: 10px; 
-            display: flex; 
-            align-items: center; 
-            border: 1px solid var(--border); 
-            transition: opacity 0.3s;
+            background: var(--item-bg); padding: 18px; border-radius: 20px; margin-bottom: 12px; 
+            display: flex; align-items: center; border: 1px solid var(--border); 
+            animation: slideIn 0.4s ease backwards;
         }
+        .habit-text { flex-grow: 1; margin-left: 15px; font-weight: 500; letter-spacing: -0.3px; }
+        .habit-item.completed { opacity: 0.3; filter: grayscale(1); }
 
-        .habit-text { flex-grow: 1; margin-left: 14px; font-size: 15px; font-weight: 400; }
-        .habit-item.completed { opacity: 0.35; }
-
-        /* Minimal Line Checkbox */
         .check-btn { 
-            width: 24px; height: 24px; 
-            border: 2px solid var(--border); 
-            border-radius: 7px; 
-            background: none;
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s;
+            width: 26px; height: 26px; border: 2px solid var(--border); border-radius: 8px; 
+            background: none; display: flex; align-items: center; justify-content: center; transition: 0.2s;
         }
-        .completed .check-btn {
-            background: var(--orange);
-            border-color: var(--orange);
-        }
+        .completed .check-btn { background: var(--orange); border-color: var(--orange); }
 
-        /* Minimal Line Icons (SVG) */
-        .icon-svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .icon-svg { fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
 
-        .footer { margin-top: 30px; display: flex; gap: 15px; }
+        .footer { margin-top: 30px; display: flex; gap: 20px; }
         .icon-toggle {
-            background: var(--container-bg);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 10px;
-            border-radius: 50%;
-            width: 44px; height: 44px;
-            display: flex; align-items: center; justify-content: center;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            background: var(--container-bg); border: 1px solid var(--border); color: var(--text);
+            width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
         }
     </style>
 </head>
@@ -182,39 +119,33 @@
         <div class="header">
             <h1>VibeTrack</h1>
             <div class="streak-display">
-                <svg class="icon-svg" width="18" height="18" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                <svg class="icon-svg" width="20" height="20" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
                 <span id="streakNum">0</span>
             </div>
         </div>
 
-        <div class="progress-bar-wrap"><div id="progressBar"></div></div>
+        <div id="progWrap" class="progress-bar-wrap"><div id="progressBar"></div></div>
         
         <div class="input-section">
             <select id="hSelect">
-                <option value="">Select Habit</option>
+                <option value="">Choose Habit</option>
                 <option value="Hydration">Hydration</option>
+                <option value="Training">Training</option>
                 <option value="Reading">Reading</option>
-                <option value="Exercise">Exercise</option>
-                <option value="Meditation">Meditation</option>
-                <option value="CUSTOM">Custom</option>
+                <option value="Deep Work">Deep Work</option>
+                <option value="CUSTOM">Custom...</option>
             </select>
-            <input type="text" id="hInput" style="display:none;" placeholder="New Habit...">
-            <button id="add-btn">Add Habit</button>
+            <input type="text" id="hInput" style="display:none;" placeholder="What's the goal?">
+            <button id="add-btn">Add to Routine</button>
         </div>
 
         <div id="hList"></div>
     </div>
 
     <div class="footer">
-        <button class="icon-toggle" onclick="toggleTheme()">
-            <svg class="icon-svg" width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-        </button>
-        <button class="icon-toggle" onclick="togglePhoto()">
-            <svg class="icon-svg" width="20" height="20" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-        </button>
-        <button class="icon-toggle" onclick="resetDay()">
-            <svg class="icon-svg" width="20" height="20" viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
-        </button>
+        <button class="icon-toggle" onclick="toggleTheme()"><svg class="icon-svg" width="20" height="20" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
+        <button class="icon-toggle" onclick="togglePhoto()"><svg class="icon-svg" width="20" height="20" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></button>
+        <button class="icon-toggle" onclick="resetDay()"><svg class="icon-svg" width="20" height="20" viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg></button>
     </div>
 
     <script>
@@ -242,12 +173,8 @@
             if (fullCompletion && lastCompletionDate !== today) {
                 const yesterday = new Date();
                 yesterday.setDate(yesterday.getDate() - 1);
-                
-                if (lastCompletionDate === yesterday.toDateString()) {
-                    streak++;
-                } else if (lastCompletionDate === "") {
-                    streak = 1;
-                }
+                if (lastCompletionDate === yesterday.toDateString()) streak++;
+                else if (lastCompletionDate === "") streak = 1;
                 lastCompletionDate = today;
                 localStorage.setItem('vibeStreak', streak);
                 localStorage.setItem('vibeLastDate', lastCompletionDate);
@@ -264,7 +191,7 @@
 
         document.getElementById('add-btn').onclick = () => {
             let val = hSelect.value === 'CUSTOM' ? hInput.value : hSelect.value;
-            if(val && val !== 'Select Habit') { 
+            if(val && val !== 'Choose Habit') { 
                 habits.push({text: val, completed: false}); 
                 render(); 
                 hInput.value=''; hSelect.value=''; hInput.style.display='none'; 
@@ -277,12 +204,13 @@
             habits.forEach((h, i) => {
                 const el = document.createElement('div');
                 el.className = `habit-item ${h.completed ? 'completed' : ''}`;
+                el.style.animationDelay = (i * 0.05) + 's';
                 el.innerHTML = `
                     <button class="check-btn" onclick="toggle(${i})">
-                        ${h.completed ? '<svg class="icon-svg" style="color:white" width="14" height="14" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>' : ''}
+                        ${h.completed ? '<svg class="icon-svg" style="color:white" width="16" height="16" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>' : ''}
                     </button>
                     <span class="habit-text">${h.text}</span>
-                    <button style="background:none; border:none; color:#666; cursor:pointer;" onclick="removeHabit(${i})">✕</button>
+                    <button style="background:none; border:none; color:#555; cursor:pointer;" onclick="removeHabit(${i})">✕</button>
                 `;
                 list.appendChild(el);
             });
@@ -291,14 +219,17 @@
             document.getElementById('progressBar').style.width = percent + '%';
             
             if(percent === 100 && habits.length > 0) {
-                confetti({particleCount:100, spread:50, origin:{y:0.8}, colors:['#ff6600']});
+                document.getElementById('progWrap').classList.add('full-glow');
+                confetti({particleCount:100, spread:60, origin:{y:0.7}, colors:['#ff6600']});
                 checkStreak(true);
+            } else {
+                document.getElementById('progWrap').classList.remove('full-glow');
             }
             localStorage.setItem('vibeHabits', JSON.stringify(habits));
         }
 
         window.toggle = (i) => { habits[i].completed = !habits[i].completed; render(); };
-        window.removeHabit = (i) => { if(confirm("Remove habit?")) { habits.splice(i, 1); render(); } };
+        window.removeHabit = (i) => { habits.splice(i, 1); render(); };
         window.resetDay = () => { habits.forEach(h => h.completed = false); render(); };
 
         updateUI();
