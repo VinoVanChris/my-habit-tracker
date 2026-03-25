@@ -7,9 +7,9 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
-            --bg: #1a1a1a;
-            --container-bg: rgba(30, 30, 30, 0.85);
-            --item-bg: rgba(45, 45, 45, 0.7);
+            --bg: #121212;
+            --container-bg: rgba(28, 28, 28, 0.9);
+            --item-bg: rgba(255, 255, 255, 0.05);
             --text: #ffffff;
             --orange: #ff6600;
             --border: rgba(255, 255, 255, 0.1);
@@ -17,9 +17,9 @@
         }
 
         [data-theme="light"] {
-            --bg: #f5f5f7;
-            --container-bg: rgba(255, 255, 255, 0.9);
-            --item-bg: rgba(240, 240, 240, 0.8);
+            --bg: #f8f9fa;
+            --container-bg: rgba(255, 255, 255, 0.95);
+            --item-bg: rgba(0, 0, 0, 0.03);
             --text: #1a1a1a;
             --border: rgba(0, 0, 0, 0.08);
             --overlay: rgba(255, 255, 255, 0.2);
@@ -31,7 +31,7 @@
             background-position: center;
             background-attachment: fixed;
             color: var(--text);
-            font-family: -apple-system, system-ui, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -49,74 +49,71 @@
             z-index: -1;
         }
 
-        /* THE MAIN WRAPPER CARD */
         .container { 
             width: 100%; 
-            max-width: 420px; 
+            max-width: 400px; 
             z-index: 10; 
-            margin-top: 20px;
+            margin-top: 40px;
             background: var(--container-bg); 
-            padding: 25px; 
-            border-radius: 30px; 
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px); 
+            padding: 30px; 
+            border-radius: 32px; 
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px); 
             border: 1px solid var(--border); 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
             box-sizing: border-box;
         }
 
-        /* HEADER INSIDE THE CARD */
-        .header-row { 
+        .header { 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         h1 { 
             color: var(--orange); 
-            letter-spacing: 3px; 
-            font-size: 24px; 
+            letter-spacing: 2px; 
+            font-size: 20px; 
             margin: 0; 
-            font-weight: 900;
+            font-weight: 800;
+            text-transform: uppercase;
         }
 
-        .theme-toggle { 
+        .streak-display {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--orange);
+        }
+
+        .progress-bar-wrap { 
             background: var(--item-bg); 
-            border: 1px solid var(--border); 
-            color: var(--text); 
-            padding: 8px 12px; 
-            border-radius: 12px; 
-            font-size: 16px;
-        }
-
-        .progress-container { 
-            background: rgba(0,0,0,0.1); 
-            height: 10px; 
-            border-radius: 5px; 
-            margin-bottom: 25px; 
+            height: 6px; 
+            border-radius: 10px; 
+            margin-bottom: 30px; 
             overflow: hidden; 
-            border: 1px solid var(--border);
         }
 
         #progressBar { 
             background: var(--orange); 
             height: 100%; width: 0%; 
-            transition: width 0.5s ease; 
+            transition: width 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); 
         }
-
-        .input-section { margin-bottom: 25px; }
 
         select, input { 
             background: var(--item-bg); 
             border: 1px solid var(--border); 
             color: var(--text); 
-            padding: 15px; 
-            border-radius: 12px; 
+            padding: 14px; 
+            border-radius: 14px; 
             width: 100%; 
             box-sizing: border-box; 
             margin-bottom: 12px; 
-            font-size: 16px;
+            font-size: 15px;
+            outline: none;
             -webkit-appearance: none;
         }
 
@@ -124,49 +121,56 @@
             background: var(--orange); 
             color: white; 
             border: none; 
-            padding: 16px; 
-            border-radius: 12px; 
+            padding: 14px; 
+            border-radius: 14px; 
             width: 100%; 
-            font-weight: bold; 
-            letter-spacing: 1px;
+            font-weight: 700; 
             font-size: 14px;
+            cursor: pointer;
+            margin-bottom: 25px;
         }
 
-        /* HABIT ITEMS */
         .habit-item { 
             background: var(--item-bg); 
             padding: 16px; 
             border-radius: 18px; 
-            margin-bottom: 12px; 
+            margin-bottom: 10px; 
             display: flex; 
             align-items: center; 
             border: 1px solid var(--border); 
+            transition: opacity 0.3s;
         }
 
-        .habit-text { flex-grow: 1; margin-left: 15px; font-size: 16px; }
-        .habit-item.completed { opacity: 0.4; }
+        .habit-text { flex-grow: 1; margin-left: 14px; font-size: 15px; font-weight: 400; }
+        .habit-item.completed { opacity: 0.35; }
 
+        /* Minimal Line Checkbox */
         .check-btn { 
-            border: 2px solid var(--orange); 
-            background: none; 
-            color: var(--orange); 
-            border-radius: 10px; 
-            width: 32px; height: 32px; 
+            width: 24px; height: 24px; 
+            border: 2px solid var(--border); 
+            border-radius: 7px; 
+            background: none;
+            cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            font-size: 18px;
+            transition: all 0.2s;
+        }
+        .completed .check-btn {
+            background: var(--orange);
+            border-color: var(--orange);
         }
 
-        .del-btn { background: none; border: none; color: #ff4444; font-size: 16px; padding-left: 10px; }
+        /* Minimal Line Icons (SVG) */
+        .icon-svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-        /* FOOTER OUTSIDE THE CARD */
-        .footer-controls { margin-top: 30px; display: flex; flex-direction: column; gap: 12px; align-items: center; }
-        .toggle-btn { 
-            background: var(--container-bg); 
-            color: var(--text); 
-            border: 1px solid var(--border); 
-            padding: 10px 20px; 
-            border-radius: 20px; 
-            font-size: 12px; 
+        .footer { margin-top: 30px; display: flex; gap: 15px; }
+        .icon-toggle {
+            background: var(--container-bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 10px;
+            border-radius: 50%;
+            width: 44px; height: 44px;
+            display: flex; align-items: center; justify-content: center;
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
         }
@@ -175,44 +179,53 @@
 <body id="mainBody">
 
     <div class="container">
-        <div class="header-row">
-            <h1>VIBETRACK</h1>
-            <button class="theme-toggle" onclick="toggleTheme()" id="tBtn">🌙</button>
+        <div class="header">
+            <h1>VibeTrack</h1>
+            <div class="streak-display">
+                <svg class="icon-svg" width="18" height="18" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                <span id="streakNum">0</span>
+            </div>
         </div>
 
-        <div class="progress-container"><div id="progressBar"></div></div>
+        <div class="progress-bar-wrap"><div id="progressBar"></div></div>
         
         <div class="input-section">
             <select id="hSelect">
-                <option value="">Choose a habit...</option>
-                <option value="💧 Drink Water">💧 Drink Water</option>
-                <option value="📖 Read 10 Pages">📖 Read 10 Pages</option>
-                <option value="🧘 Meditation">🧘 Meditation</option>
-                <option value="🏋️ Workout">🏋️ Workout</option>
-                <option value="CUSTOM">➕ Custom...</option>
+                <option value="">Select Habit</option>
+                <option value="Hydration">Hydration</option>
+                <option value="Reading">Reading</option>
+                <option value="Exercise">Exercise</option>
+                <option value="Meditation">Meditation</option>
+                <option value="CUSTOM">Custom</option>
             </select>
-            <input type="text" id="hInput" style="display:none;" placeholder="Habit name...">
-            <button id="add-btn">ADD HABIT</button>
+            <input type="text" id="hInput" style="display:none;" placeholder="New Habit...">
+            <button id="add-btn">Add Habit</button>
         </div>
 
         <div id="hList"></div>
     </div>
 
-    <div class="footer-controls">
-        <button class="toggle-btn" onclick="togglePhoto()">🖼 Photo BG: <span id="photoStatus">OFF</span></button>
-        <button class="toggle-btn" onclick="resetDay()">Reset Checks</button>
+    <div class="footer">
+        <button class="icon-toggle" onclick="toggleTheme()">
+            <svg class="icon-svg" width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </button>
+        <button class="icon-toggle" onclick="togglePhoto()">
+            <svg class="icon-svg" width="20" height="20" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        </button>
+        <button class="icon-toggle" onclick="resetDay()">
+            <svg class="icon-svg" width="20" height="20" viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+        </button>
     </div>
 
     <script>
         let habits = JSON.parse(localStorage.getItem('vibeHabits')) || [];
         let theme = localStorage.getItem('vibeTheme') || 'dark';
         let usePhoto = localStorage.getItem('vibePhoto') === 'true';
+        let streak = parseInt(localStorage.getItem('vibeStreak')) || 0;
+        let lastCompletionDate = localStorage.getItem('vibeLastDate') || "";
 
         function updateUI() {
             document.documentElement.setAttribute('data-theme', theme);
-            document.getElementById('tBtn').innerText = theme === 'dark' ? '🌙' : '☀️';
-            document.getElementById('photoStatus').innerText = usePhoto ? 'ON' : 'OFF';
-            
             const body = document.getElementById('mainBody');
             if (usePhoto) {
                 body.classList.add('has-photo');
@@ -221,19 +234,29 @@
                 body.classList.remove('has-photo');
                 body.style.backgroundImage = 'none';
             }
+            document.getElementById('streakNum').innerText = streak;
         }
 
-        function toggleTheme() {
-            theme = theme === 'dark' ? 'light' : 'dark';
-            localStorage.setItem('vibeTheme', theme);
+        function checkStreak(fullCompletion) {
+            const today = new Date().toDateString();
+            if (fullCompletion && lastCompletionDate !== today) {
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                
+                if (lastCompletionDate === yesterday.toDateString()) {
+                    streak++;
+                } else if (lastCompletionDate === "") {
+                    streak = 1;
+                }
+                lastCompletionDate = today;
+                localStorage.setItem('vibeStreak', streak);
+                localStorage.setItem('vibeLastDate', lastCompletionDate);
+            }
             updateUI();
         }
 
-        function togglePhoto() {
-            usePhoto = !usePhoto;
-            localStorage.setItem('vibePhoto', usePhoto);
-            updateUI();
-        }
+        function toggleTheme() { theme = theme === 'dark' ? 'light' : 'dark'; localStorage.setItem('vibeTheme', theme); updateUI(); }
+        function togglePhoto() { usePhoto = !usePhoto; localStorage.setItem('vibePhoto', usePhoto); updateUI(); }
 
         const hSelect = document.getElementById('hSelect');
         const hInput = document.getElementById('hInput');
@@ -241,7 +264,11 @@
 
         document.getElementById('add-btn').onclick = () => {
             let val = hSelect.value === 'CUSTOM' ? hInput.value : hSelect.value;
-            if(val) { habits.push({text: val, completed: false}); render(); hInput.value=''; hSelect.value=''; hInput.style.display='none'; }
+            if(val && val !== 'Select Habit') { 
+                habits.push({text: val, completed: false}); 
+                render(); 
+                hInput.value=''; hSelect.value=''; hInput.style.display='none'; 
+            }
         };
 
         function render() {
@@ -250,17 +277,28 @@
             habits.forEach((h, i) => {
                 const el = document.createElement('div');
                 el.className = `habit-item ${h.completed ? 'completed' : ''}`;
-                el.innerHTML = `<button class="check-btn" onclick="toggle(${i})">${h.completed ? '✓' : ''}</button><span class="habit-text">${h.text}</span><button class="del-btn" onclick="removeHabit(${i})">✕</button>`;
+                el.innerHTML = `
+                    <button class="check-btn" onclick="toggle(${i})">
+                        ${h.completed ? '<svg class="icon-svg" style="color:white" width="14" height="14" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>' : ''}
+                    </button>
+                    <span class="habit-text">${h.text}</span>
+                    <button style="background:none; border:none; color:#666; cursor:pointer;" onclick="removeHabit(${i})">✕</button>
+                `;
                 list.appendChild(el);
             });
             const done = habits.filter(h => h.completed).length;
-            document.getElementById('progressBar').style.width = (habits.length ? (done/habits.length)*100 : 0) + '%';
-            if(done === habits.length && habits.length > 0) confetti({particleCount:150, spread:70, origin:{y:0.6}});
+            const percent = habits.length ? (done/habits.length)*100 : 0;
+            document.getElementById('progressBar').style.width = percent + '%';
+            
+            if(percent === 100 && habits.length > 0) {
+                confetti({particleCount:100, spread:50, origin:{y:0.8}, colors:['#ff6600']});
+                checkStreak(true);
+            }
             localStorage.setItem('vibeHabits', JSON.stringify(habits));
         }
 
         window.toggle = (i) => { habits[i].completed = !habits[i].completed; render(); };
-        window.removeHabit = (i) => { if(confirm("Delete?")) { habits.splice(i, 1); render(); } };
+        window.removeHabit = (i) => { if(confirm("Remove habit?")) { habits.splice(i, 1); render(); } };
         window.resetDay = () => { habits.forEach(h => h.completed = false); render(); };
 
         updateUI();
