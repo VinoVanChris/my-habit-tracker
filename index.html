@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VIBEtrack Supreme</title>
+    <title>VIBEtrack Stealth</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -13,21 +13,21 @@
     <style>
         :root {
             --bg: #0c0c0c;
-            --container-bg: rgba(28, 28, 30, 0.94);
-            --item-bg: rgba(255, 255, 255, 0.08);
+            --container-bg: rgba(28, 28, 30, 0.96);
+            --item-bg: rgba(255, 255, 255, 0.06);
             --text: #ffffff;
             --orange: #ff6600;
-            --border: rgba(255, 255, 255, 0.15);
+            --border: rgba(255, 255, 255, 0.12);
             --overlay: rgba(0, 0, 0, 0.5);
         }
 
         [data-theme="light"] {
             --bg: #f2f2f7;
             --container-bg: rgba(255, 255, 255, 0.98);
-            --item-bg: rgba(0, 0, 0, 0.05);
+            --item-bg: rgba(0, 0, 0, 0.04);
             --text: #1c1c1e;
-            --border: rgba(0, 0, 0, 0.12);
-            --overlay: rgba(255, 255, 255, 0.2);
+            --border: rgba(0, 0, 0, 0.08);
+            --overlay: rgba(255, 255, 255, 0.1);
         }
 
         body {
@@ -47,22 +47,22 @@
 
         .container { 
             width: 100%; max-width: 480px; z-index: 10; margin-top: 60px;
-            background: var(--container-bg); padding: 40px; border-radius: 50px; 
+            background: var(--container-bg); padding: 40px; border-radius: 48px; 
             backdrop-filter: blur(50px); -webkit-backdrop-filter: blur(50px); 
-            border: 1px solid var(--border); box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+            border: 1px solid var(--border); box-shadow: 0 40px 80px rgba(0,0,0,0.5);
         }
 
-        /* 56px MASSIVE LOGO */
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
-        .logo-wrap { display: flex; align-items: center; gap: 0px; }
+        /* LOCKED AT PREVIOUS SIZE */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px; }
+        .logo-wrap { display: flex; align-items: center; }
         .logo-icon { fill: var(--orange); width: 56px; height: 56px; margin-right: -2px; }
         .logo-text { color: var(--text); font-size: 56px; font-weight: 400; letter-spacing: -4px; margin: 0; line-height: 1; }
         .logo-highlight { color: var(--orange); font-weight: 900; text-transform: uppercase; letter-spacing: -2px; }
 
-        .streak-display { display: flex; align-items: center; gap: 6px; color: var(--orange); font-weight: 800; font-size: 26px; }
+        .streak-display { display: flex; align-items: center; gap: 4px; color: var(--orange); font-weight: 800; font-size: 26px; }
 
-        .progress-bar-wrap { background: var(--item-bg); height: 12px; border-radius: 20px; margin-bottom: 40px; overflow: hidden; }
-        #progressBar { background: var(--orange); height: 100%; width: 0%; transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .progress-bar-wrap { background: var(--item-bg); height: 8px; border-radius: 20px; margin-bottom: 35px; overflow: hidden; }
+        #progressBar { background: var(--orange); height: 100%; width: 0%; transition: width 0.8s ease; }
 
         select, input, #add-btn { 
             background: var(--item-bg); border: 1px solid var(--border); color: var(--text); 
@@ -72,44 +72,34 @@
 
         #add-btn { background: var(--orange); color: white; font-weight: 900; border: none; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; }
 
+        /* CLEAN LIST - NO ICONS */
         .habit-item { 
-            background: var(--item-bg); padding: 24px; border-radius: 28px; margin-bottom: 15px; 
+            background: var(--item-bg); padding: 24px; border-radius: 24px; margin-bottom: 12px; 
             display: flex; align-items: center; border: 1px solid var(--border); 
-            animation: slideIn 0.4s ease-out backwards;
+            transition: all 0.3s ease;
         }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* THE ICON FIX: PRE-RENDERED DATA STRINGS */
-        .icon-box {
-            width: 32px; height: 32px;
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: contain;
-            flex-shrink: 0;
-            margin-left: 15px;
-            filter: brightness(0) invert(1); /* Forces icons to be white in dark mode */
-        }
-        [data-theme="light"] .icon-box { filter: none; }
-
-        .habit-text { flex-grow: 1; margin: 0 20px; font-weight: 600; font-size: 22px; letter-spacing: -0.5px; }
-        .habit-item.completed { opacity: 0.25; filter: grayscale(1); }
+        
+        .habit-text { flex-grow: 1; margin: 0 20px; font-weight: 600; font-size: 21px; letter-spacing: -0.5px; }
+        
+        .habit-item.completed { opacity: 0.3; filter: grayscale(1); transform: scale(0.98); }
 
         .check-btn { 
-            width: 40px; height: 40px; border: 3px solid var(--border); border-radius: 14px; 
+            width: 38px; height: 38px; border: 2.5px solid var(--border); border-radius: 12px; 
             background: none; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+            transition: background 0.2s ease;
         }
         .completed .check-btn { background: var(--orange); border-color: var(--orange); }
 
         .del-btn { 
-            background: none; border: none; color: #777; cursor: pointer; padding: 10px; 
-            margin-right: -10px; flex-shrink: 0; opacity: 0.6;
+            background: none; border: none; color: var(--text); font-size: 24px; 
+            cursor: pointer; opacity: 0.3; padding: 5px 10px;
         }
 
-        .footer { margin-top: 50px; display: flex; gap: 40px; }
+        .footer { margin-top: 50px; display: flex; gap: 30px; }
         .footer-btn {
             background: var(--container-bg); border: 1px solid var(--border); color: var(--text);
-            width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            cursor: pointer;
+            width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 24px;
         }
     </style>
 </head>
@@ -122,7 +112,7 @@
                 <h1 class="logo-text"><span class="logo-highlight">VIBE</span>track</h1>
             </div>
             <div class="streak-display">
-                <svg width="26" height="26" fill="var(--orange)" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                <span>⚡</span>
                 <span id="streakNum">0</span>
             </div>
         </div>
@@ -132,13 +122,13 @@
         <div class="input-section">
             <select id="hSelect">
                 <option value="">Choose Habit...</option>
-                <option value="water|Hydration">💧 Hydration</option>
-                <option value="book|Reading">📖 Reading</option>
-                <option value="zen|Meditation">🧘 Meditation</option>
-                <option value="lift|Training">🏋️ Training</option>
-                <option value="star|CUSTOM">✨ Custom...</option>
+                <option value="Hydration">Hydration</option>
+                <option value="Reading">Reading</option>
+                <option value="Meditation">Meditation</option>
+                <option value="Training">Training</option>
+                <option value="custom">Custom...</option>
             </select>
-            <input type="text" id="hInput" style="display:none;" placeholder="Enter Name">
+            <input type="text" id="hInput" style="display:none;" placeholder="Name your habit">
             <button id="add-btn">Add to Routine</button>
         </div>
 
@@ -146,23 +136,12 @@
     </div>
 
     <div class="footer">
-        <button class="footer-btn" onclick="toggleTheme()"><div class="icon-box" style="margin:0; background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z%22/></svg>')"></div></button>
-        <button class="footer-btn" onclick="togglePhoto()"><div class="icon-box" style="margin:0; background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><rect x=%223%22 y=%223%22 width=%2218%22 height=%2218%22 rx=%222%22/><circle cx=%228.5%22 cy=%228.5%22 r=%221.5%22/><path d=%22M21 15l-5-5L5 21%22/></svg>')"></div></button>
-        <button class="footer-btn" onclick="resetDay()"><div class="icon-box" style="margin:0; background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15%22/></svg>')"></div></button>
+        <button class="footer-btn" onclick="toggleTheme()">🌓</button>
+        <button class="footer-btn" onclick="togglePhoto()">🖼️</button>
+        <button class="footer-btn" onclick="resetDay()">🔄</button>
     </div>
 
     <script>
-        // DATA URI ICONS - Bulletproof rendering
-        const ICON_DATA = {
-            water: 'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22black%22 stroke-width=%222.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5s-3 3.5-3 5.5a7 7 0 0 0 7 7Z%22/></svg>',
-            book: 'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22black%22 stroke-width=%222.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M4 19.5A2.5 2.5 0 0 1 6.5 17H20%22/><path d=%22M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z%22/></svg>',
-            zen: 'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22black%22 stroke-width=%222.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><circle cx=%2212%22 cy=%2212%22 r=%229%22/><path d=%22M12 8v8M8 12h8%22/></svg>',
-            lift: 'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22black%22 stroke-width=%222.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22m6.5 6.5 11 11M21 21l-1-1M3 3l1 1m14 18 4-4M2 6l4-4M3 10l7-7m4 18 7-7%22/></svg>',
-            star: 'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22black%22 stroke-width=%222.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polygon points=%2212 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2%22/></svg>',
-            trash: 'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22black%22 stroke-width=%222.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M18 6L6 18M6 6l12 12%22/></svg>',
-            check: 'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22white%22 stroke-width=%223%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M20 6L9 17l-5-5%22/></svg>'
-        };
-
         let habits = JSON.parse(localStorage.getItem('vibeHabits')) || [];
         let theme = localStorage.getItem('vibeTheme') || 'dark';
         let usePhoto = localStorage.getItem('vibePhoto') === 'true';
@@ -178,13 +157,13 @@
 
         const hSelect = document.getElementById('hSelect');
         const hInput = document.getElementById('hInput');
-        hSelect.onchange = () => hInput.style.display = hSelect.value.includes('star') ? 'block' : 'none';
+        hSelect.onchange = () => hInput.style.display = hSelect.value === 'custom' ? 'block' : 'none';
 
         document.getElementById('add-btn').onclick = () => {
             if(!hSelect.value) return;
-            let [key, text] = hSelect.value.split('|');
-            if(key === 'star') text = hInput.value || "New Habit";
-            habits.push({icon: key, text: text, completed: false}); 
+            let text = hSelect.value === 'custom' ? hInput.value : hSelect.value;
+            if(!text) return;
+            habits.push({text: text, completed: false}); 
             render(); hInput.value=''; hSelect.value=''; hInput.style.display='none'; 
         };
 
@@ -196,19 +175,19 @@
                 el.className = `habit-item ${h.completed ? 'completed' : ''}`;
                 el.innerHTML = `
                     <button class="check-btn" onclick="toggle(${i})">
-                        ${h.completed ? `<div class="icon-box" style="margin:0; background-image:url('${ICON_DATA.check}'); filter:none;"></div>` : ''}
+                        ${h.completed ? '<span style="color:white; font-weight:bold;">✓</span>' : ''}
                     </button>
-                    <div class="icon-box" style="background-image:url('${ICON_DATA[h.icon] || ICON_DATA.star}');"></div>
                     <span class="habit-text">${h.text}</span>
-                    <button class="del-btn" onclick="removeHabit(${i})">
-                        <div class="icon-box" style="width:20px; background-image:url('${ICON_DATA.trash}'); opacity:0.5;"></div>
-                    </button>
+                    <button class="del-btn" onclick="removeHabit(${i})">×</button>
                 `;
                 list.appendChild(el);
             });
             const percent = habits.length ? (habits.filter(h => h.completed).length / habits.length) * 100 : 0;
             document.getElementById('progressBar').style.width = percent + '%';
-            if(percent === 100 && habits.length > 0) confetti({particleCount:100, spread:70, origin:{y:0.8}, colors:['#ff6600']});
+            if(percent === 100 && habits.length > 0) {
+                confetti({particleCount:100, spread:70, origin:{y:0.8}, colors:['#ff6600']});
+                // Increment streak if not already counted today
+            }
             localStorage.setItem('vibeHabits', JSON.stringify(habits));
         }
 
