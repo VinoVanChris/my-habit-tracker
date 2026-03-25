@@ -8,21 +8,21 @@
     <style>
         :root {
             --bg: #1a1a1a;
-            --container-bg: rgba(34, 34, 34, 0.9);
-            --item-bg: rgba(38, 38, 38, 0.8);
+            --container-bg: rgba(34, 34, 34, 0.85);
+            --item-bg: rgba(45, 45, 45, 0.7);
             --text: #ffffff;
             --orange: #ff6600;
-            --border: #444;
-            --overlay: rgba(0,0,0,0.4);
+            --border: rgba(255, 255, 255, 0.1);
+            --overlay: rgba(0, 0, 0, 0.6); /* DARKER OVERLAY FOR LOGO CLARITY */
         }
 
         [data-theme="light"] {
             --bg: #f5f5f7;
-            --container-bg: rgba(255, 255, 255, 0.9);
-            --item-bg: rgba(238, 238, 238, 0.8);
+            --container-bg: rgba(255, 255, 255, 0.85);
+            --item-bg: rgba(240, 240, 240, 0.7);
             --text: #1a1a1a;
-            --border: #cccccc;
-            --overlay: rgba(255,255,255,0.2);
+            --border: rgba(0, 0, 0, 0.1);
+            --overlay: rgba(255, 255, 255, 0.3);
         }
 
         body {
@@ -38,10 +38,10 @@
             min-height: 100vh;
             padding: env(safe-area-inset-top) 20px 40px 20px;
             margin: 0;
-            transition: all 0.5s ease;
+            transition: all 0.4s ease;
         }
 
-        /* This creates a "tint" over the photo so you can still read the text */
+        /* The Tint Layer */
         body.has-photo::before {
             content: "";
             position: fixed;
@@ -50,24 +50,124 @@
             z-index: -1;
         }
 
-        .header-row { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 400px; margin-top: 20px; z-index: 10; }
-        .theme-toggle { background: var(--item-bg); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 12px; font-size: 18px; backdrop-filter: blur(5px); }
-        .container { width: 100%; max-width: 400px; z-index: 10; }
-        h1 { color: var(--orange); letter-spacing: 2px; font-size: 28px; margin: 0; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .header-row { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            width: 100%; 
+            max-width: 400px; 
+            margin-top: 20px; 
+            z-index: 10; 
+        }
+
+        h1 { 
+            color: var(--orange); 
+            letter-spacing: 3px; 
+            font-size: 28px; 
+            margin: 0; 
+            text-shadow: 0 2px 15px rgba(0,0,0,0.5); 
+        }
+
+        .theme-toggle { 
+            background: var(--item-bg); 
+            border: 1px solid var(--border); 
+            color: var(--text); 
+            padding: 8px 12px; 
+            border-radius: 12px; 
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px); 
+        }
+
+        .container { width: 100%; max-width: 400px; z-index: 10; margin-top: 20px; }
         
-        .progress-container { background: var(--border); height: 10px; border-radius: 5px; margin: 20px 0; overflow: hidden; }
-        #progressBar { background: var(--orange); height: 100%; width: 0%; transition: width 0.4s ease; }
+        .progress-container { 
+            background: rgba(0,0,0,0.2); 
+            height: 12px; 
+            border-radius: 6px; 
+            margin-bottom: 25px; 
+            overflow: hidden; 
+            border: 1px solid var(--border);
+        }
 
-        .input-area { background: var(--container-bg); padding: 15px; border-radius: 15px; backdrop-filter: blur(10px); border: 1px solid var(--border); margin-bottom: 20px; }
-        select, input { background: var(--item-bg); border: 1px solid var(--border); color: var(--text); padding: 12px; border-radius: 10px; width: 100%; box-sizing: border-box; margin-bottom: 10px; }
-        #add-btn { background: var(--orange); color: white; border: none; padding: 15px; border-radius: 10px; width: 100%; font-weight: bold; }
+        #progressBar { 
+            background: linear-gradient(90deg, var(--orange), #ff9500); 
+            height: 100%; width: 0%; 
+            transition: width 0.5s cubic-bezier(0.1, 0.7, 0.1, 1); 
+        }
 
-        .habit-item { background: var(--container-bg); padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; align-items: center; backdrop-filter: blur(10px); border: 1px solid var(--border); }
-        .habit-text { flex-grow: 1; margin-left: 15px; }
-        .check-btn { border: 2px solid var(--orange); background: none; color: var(--orange); border-radius: 10px; width: 35px; height: 35px; font-size: 18px; }
+        .input-area { 
+            background: var(--container-bg); 
+            padding: 20px; 
+            border-radius: 20px; 
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px); 
+            border: 1px solid var(--border); 
+            margin-bottom: 25px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
 
-        .footer-controls { margin-top: 30px; display: flex; flex-direction: column; gap: 10px; align-items: center; }
-        .toggle-btn { background: var(--item-bg); color: var(--text); border: 1px solid var(--border); padding: 10px 20px; border-radius: 20px; font-size: 12px; backdrop-filter: blur(5px); }
+        select, input { 
+            background: var(--item-bg); 
+            border: 1px solid var(--border); 
+            color: var(--text); 
+            padding: 15px; 
+            border-radius: 12px; 
+            width: 100%; 
+            box-sizing: border-box; 
+            margin-bottom: 12px; 
+            font-size: 16px;
+        }
+
+        #add-btn { 
+            background: var(--orange); 
+            color: white; 
+            border: none; 
+            padding: 15px; 
+            border-radius: 12px; 
+            width: 100%; 
+            font-weight: bold; 
+            letter-spacing: 1px;
+        }
+
+        .habit-item { 
+            background: var(--container-bg); 
+            padding: 18px; 
+            border-radius: 18px; 
+            margin-bottom: 12px; 
+            display: flex; 
+            align-items: center; 
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px); 
+            border: 1px solid var(--border); 
+            transition: transform 0.2s ease;
+        }
+
+        .habit-text { flex-grow: 1; margin-left: 15px; font-size: 17px; font-weight: 500; }
+        .habit-item.completed { opacity: 0.5; transform: scale(0.97); }
+
+        .check-btn { 
+            border: 2px solid var(--orange); 
+            background: none; 
+            color: var(--orange); 
+            border-radius: 12px; 
+            width: 38px; height: 38px; 
+            font-size: 20px; 
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .del-btn { background: none; border: none; color: #ff4444; font-size: 18px; padding-left: 10px; }
+
+        .footer-controls { margin-top: 40px; display: flex; flex-direction: column; gap: 12px; align-items: center; }
+        .toggle-btn { 
+            background: var(--item-bg); 
+            color: var(--text); 
+            border: 1px solid var(--border); 
+            padding: 12px 24px; 
+            border-radius: 25px; 
+            font-size: 13px; 
+            backdrop-filter: blur(10px); 
+            -webkit-backdrop-filter: blur(10px);
+        }
     </style>
 </head>
 <body id="mainBody">
@@ -79,11 +179,20 @@
 
     <div class="container">
         <div class="progress-container"><div id="progressBar"></div></div>
+        
         <div class="input-area">
-            <select id="hSelect"><option value="">Choose a habit...</option><option value="🧘 Meditation">🧘 Meditation</option><option value="🏋️ Workout">🏋️ Workout</option><option value="CUSTOM">➕ Custom...</option></select>
-            <input type="text" id="hInput" style="display:none;" placeholder="Name...">
+            <select id="hSelect">
+                <option value="">Choose a habit...</option>
+                <option value="💧 Drink Water">💧 Drink Water</option>
+                <option value="📖 Read 10 Pages">📖 Read 10 Pages</option>
+                <option value="🧘 Meditation">🧘 Meditation</option>
+                <option value="🏋️ Workout">🏋️ Workout</option>
+                <option value="CUSTOM">➕ Custom...</option>
+            </select>
+            <input type="text" id="hInput" style="display:none;" placeholder="Habit name...">
             <button id="add-btn">ADD HABIT</button>
         </div>
+
         <div id="hList"></div>
 
         <div class="footer-controls">
@@ -105,11 +214,8 @@
             const body = document.getElementById('mainBody');
             if (usePhoto) {
                 body.classList.add('has-photo');
-                // The API call: fetches a 1600x900 photo based on theme keywords
-                const keyword = theme === 'dark' ? 'night,city' : 'mountain,day';
-                body.style.backgroundImage = `url('https://images.unsplash.com/photo-1534067783941-51c9c23ecefd?auto=format&fit=crop&w=1000&q=80')`; 
-                // Note: For a truly random one, use: `url('https://source.unsplash.com/1600x900/?${keyword}')`
-                // But Unsplash Source is being deprecated, so we use a high-quality static test one first!
+                // Using a high-quality Unsplash image direct link
+                body.style.backgroundImage = `url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1600&q=80')`;
             } else {
                 body.classList.remove('has-photo');
                 body.style.backgroundImage = 'none';
@@ -128,14 +234,17 @@
             updateUI();
         }
 
-        // Logic for adding/rendering remains the same
         const hSelect = document.getElementById('hSelect');
         const hInput = document.getElementById('hInput');
         hSelect.onchange = () => hInput.style.display = hSelect.value === 'CUSTOM' ? 'block' : 'none';
 
         document.getElementById('add-btn').onclick = () => {
             let val = hSelect.value === 'CUSTOM' ? hInput.value : hSelect.value;
-            if(val) { habits.push({text: val, completed: false}); render(); hInput.value=''; hSelect.value=''; hInput.style.display='none'; }
+            if(val) { 
+                habits.push({text: val, completed: false}); 
+                render(); 
+                hInput.value=''; hSelect.value=''; hInput.style.display='none'; 
+            }
         };
 
         function render() {
@@ -144,16 +253,21 @@
             habits.forEach((h, i) => {
                 const el = document.createElement('div');
                 el.className = `habit-item ${h.completed ? 'completed' : ''}`;
-                el.innerHTML = `<button class="check-btn" onclick="toggle(${i})">${h.completed ? '✓' : ''}</button><span class="habit-text">${h.text}</span>`;
+                el.innerHTML = `
+                    <button class="check-btn" onclick="toggle(${i})">${h.completed ? '✓' : ''}</button>
+                    <span class="habit-text">${h.text}</span>
+                    <button class="del-btn" onclick="removeHabit(${i})">✕</button>
+                `;
                 list.appendChild(el);
             });
             const done = habits.filter(h => h.completed).length;
             document.getElementById('progressBar').style.width = (habits.length ? (done/habits.length)*100 : 0) + '%';
-            if(done === habits.length && habits.length > 0) confetti({particleCount:100, spread:70, origin:{y:0.6}});
+            if(done === habits.length && habits.length > 0) confetti({particleCount:150, spread:70, origin:{y:0.6}});
             localStorage.setItem('vibeHabits', JSON.stringify(habits));
         }
 
         window.toggle = (i) => { habits[i].completed = !habits[i].completed; render(); };
+        window.removeHabit = (i) => { if(confirm("Delete?")) { habits.splice(i, 1); render(); } };
         window.resetDay = () => { habits.forEach(h => h.completed = false); render(); };
 
         updateUI();
