@@ -8,29 +8,22 @@
     <style>
         :root {
             --bg: #1a1a1a;
-            --container-bg: rgba(34, 34, 34, 0.85);
+            --container-bg: rgba(30, 30, 30, 0.85);
             --item-bg: rgba(45, 45, 45, 0.7);
             --text: #ffffff;
             --orange: #ff6600;
-            --logo-color: var(--orange); /* Default Logo Color */
             --border: rgba(255, 255, 255, 0.1);
-            --overlay: rgba(0, 0, 0, 0.6);
+            --overlay: rgba(0, 0, 0, 0.5);
         }
 
         [data-theme="light"] {
             --bg: #f5f5f7;
-            --container-bg: rgba(255, 255, 255, 0.85);
-            --item-bg: rgba(240, 240, 240, 0.7);
+            --container-bg: rgba(255, 255, 255, 0.9);
+            --item-bg: rgba(240, 240, 240, 0.8);
             --text: #1a1a1a;
-            --border: rgba(0, 0, 0, 0.1);
-            --overlay: rgba(255, 255, 255, 0.4);
+            --border: rgba(0, 0, 0, 0.08);
+            --overlay: rgba(255, 255, 255, 0.2);
         }
-
-        /* DYNAMIC LOGO LOGIC */
-        /* When Photo is ON and Theme is DARK -> White Logo */
-        body.has-photo[data-theme="dark"] { --logo-color: #ffffff; }
-        /* When Photo is ON and Theme is LIGHT -> Black Logo */
-        body.has-photo[data-theme="light"] { --logo-color: #000000; }
 
         body {
             background-color: var(--bg);
@@ -56,24 +49,36 @@
             z-index: -1;
         }
 
+        /* THE MAIN WRAPPER CARD */
+        .container { 
+            width: 100%; 
+            max-width: 420px; 
+            z-index: 10; 
+            margin-top: 20px;
+            background: var(--container-bg); 
+            padding: 25px; 
+            border-radius: 30px; 
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px); 
+            border: 1px solid var(--border); 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            box-sizing: border-box;
+        }
+
+        /* HEADER INSIDE THE CARD */
         .header-row { 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            width: 100%; 
-            max-width: 400px; 
-            margin-top: 20px; 
-            z-index: 10; 
+            margin-bottom: 20px;
         }
 
         h1 { 
-            color: var(--logo-color); 
+            color: var(--orange); 
             letter-spacing: 3px; 
-            font-size: 28px; 
+            font-size: 24px; 
             margin: 0; 
-            transition: color 0.4s ease;
-            /* Added text-shadow to make it pop on busy backgrounds */
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            font-weight: 900;
         }
 
         .theme-toggle { 
@@ -82,16 +87,13 @@
             color: var(--text); 
             padding: 8px 12px; 
             border-radius: 12px; 
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px); 
+            font-size: 16px;
         }
 
-        .container { width: 100%; max-width: 400px; z-index: 10; margin-top: 20px; }
-        
         .progress-container { 
-            background: rgba(0,0,0,0.2); 
-            height: 12px; 
-            border-radius: 6px; 
+            background: rgba(0,0,0,0.1); 
+            height: 10px; 
+            border-radius: 5px; 
             margin-bottom: 25px; 
             overflow: hidden; 
             border: 1px solid var(--border);
@@ -100,18 +102,10 @@
         #progressBar { 
             background: var(--orange); 
             height: 100%; width: 0%; 
-            transition: width 0.5s cubic-bezier(0.1, 0.7, 0.1, 1); 
+            transition: width 0.5s ease; 
         }
 
-        .input-area { 
-            background: var(--container-bg); 
-            padding: 20px; 
-            border-radius: 20px; 
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px); 
-            border: 1px solid var(--border); 
-            margin-bottom: 25px; 
-        }
+        .input-section { margin-bottom: 25px; }
 
         select, input { 
             background: var(--item-bg); 
@@ -123,69 +117,72 @@
             box-sizing: border-box; 
             margin-bottom: 12px; 
             font-size: 16px;
+            -webkit-appearance: none;
         }
 
         #add-btn { 
             background: var(--orange); 
             color: white; 
             border: none; 
-            padding: 15px; 
+            padding: 16px; 
             border-radius: 12px; 
             width: 100%; 
             font-weight: bold; 
+            letter-spacing: 1px;
+            font-size: 14px;
         }
 
+        /* HABIT ITEMS */
         .habit-item { 
-            background: var(--container-bg); 
-            padding: 18px; 
+            background: var(--item-bg); 
+            padding: 16px; 
             border-radius: 18px; 
             margin-bottom: 12px; 
             display: flex; 
             align-items: center; 
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px); 
             border: 1px solid var(--border); 
         }
 
-        .habit-text { flex-grow: 1; margin-left: 15px; font-size: 17px; }
-        .habit-item.completed { opacity: 0.5; }
+        .habit-text { flex-grow: 1; margin-left: 15px; font-size: 16px; }
+        .habit-item.completed { opacity: 0.4; }
 
         .check-btn { 
             border: 2px solid var(--orange); 
             background: none; 
             color: var(--orange); 
-            border-radius: 12px; 
-            width: 38px; height: 38px; 
-            font-size: 20px; 
+            border-radius: 10px; 
+            width: 32px; height: 32px; 
             display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
         }
 
-        .del-btn { background: none; border: none; color: #ff4444; font-size: 18px; padding-left: 10px; }
+        .del-btn { background: none; border: none; color: #ff4444; font-size: 16px; padding-left: 10px; }
 
-        .footer-controls { margin-top: 40px; display: flex; flex-direction: column; gap: 12px; align-items: center; }
+        /* FOOTER OUTSIDE THE CARD */
+        .footer-controls { margin-top: 30px; display: flex; flex-direction: column; gap: 12px; align-items: center; }
         .toggle-btn { 
-            background: var(--item-bg); 
+            background: var(--container-bg); 
             color: var(--text); 
             border: 1px solid var(--border); 
-            padding: 12px 24px; 
-            border-radius: 25px; 
-            font-size: 13px; 
-            backdrop-filter: blur(10px); 
+            padding: 10px 20px; 
+            border-radius: 20px; 
+            font-size: 12px; 
+            backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
         }
     </style>
 </head>
 <body id="mainBody">
 
-    <div class="header-row">
-        <h1>VIBETRACK</h1>
-        <button class="theme-toggle" onclick="toggleTheme()" id="tBtn">🌙</button>
-    </div>
-
     <div class="container">
+        <div class="header-row">
+            <h1>VIBETRACK</h1>
+            <button class="theme-toggle" onclick="toggleTheme()" id="tBtn">🌙</button>
+        </div>
+
         <div class="progress-container"><div id="progressBar"></div></div>
         
-        <div class="input-area">
+        <div class="input-section">
             <select id="hSelect">
                 <option value="">Choose a habit...</option>
                 <option value="💧 Drink Water">💧 Drink Water</option>
@@ -199,11 +196,11 @@
         </div>
 
         <div id="hList"></div>
+    </div>
 
-        <div class="footer-controls">
-            <button class="toggle-btn" onclick="togglePhoto()">🖼 Photo BG: <span id="photoStatus">OFF</span></button>
-            <button class="toggle-btn" onclick="resetDay()">Reset Checks</button>
-        </div>
+    <div class="footer-controls">
+        <button class="toggle-btn" onclick="togglePhoto()">🖼 Photo BG: <span id="photoStatus">OFF</span></button>
+        <button class="toggle-btn" onclick="resetDay()">Reset Checks</button>
     </div>
 
     <script>
@@ -219,7 +216,6 @@
             const body = document.getElementById('mainBody');
             if (usePhoto) {
                 body.classList.add('has-photo');
-                // Updated to a neutral mountain landscape
                 body.style.backgroundImage = `url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1600&q=80')`;
             } else {
                 body.classList.remove('has-photo');
@@ -245,11 +241,7 @@
 
         document.getElementById('add-btn').onclick = () => {
             let val = hSelect.value === 'CUSTOM' ? hInput.value : hSelect.value;
-            if(val) { 
-                habits.push({text: val, completed: false}); 
-                render(); 
-                hInput.value=''; hSelect.value=''; hInput.style.display='none'; 
-            }
+            if(val) { habits.push({text: val, completed: false}); render(); hInput.value=''; hSelect.value=''; hInput.style.display='none'; }
         };
 
         function render() {
@@ -258,11 +250,7 @@
             habits.forEach((h, i) => {
                 const el = document.createElement('div');
                 el.className = `habit-item ${h.completed ? 'completed' : ''}`;
-                el.innerHTML = `
-                    <button class="check-btn" onclick="toggle(${i})">${h.completed ? '✓' : ''}</button>
-                    <span class="habit-text">${h.text}</span>
-                    <button class="del-btn" onclick="removeHabit(${i})">✕</button>
-                `;
+                el.innerHTML = `<button class="check-btn" onclick="toggle(${i})">${h.completed ? '✓' : ''}</button><span class="habit-text">${h.text}</span><button class="del-btn" onclick="removeHabit(${i})">✕</button>`;
                 list.appendChild(el);
             });
             const done = habits.filter(h => h.completed).length;
