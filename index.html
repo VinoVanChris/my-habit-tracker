@@ -12,8 +12,9 @@
             --item-bg: rgba(45, 45, 45, 0.7);
             --text: #ffffff;
             --orange: #ff6600;
+            --logo-color: var(--orange); /* Default Logo Color */
             --border: rgba(255, 255, 255, 0.1);
-            --overlay: rgba(0, 0, 0, 0.6); /* DARKER OVERLAY FOR LOGO CLARITY */
+            --overlay: rgba(0, 0, 0, 0.6);
         }
 
         [data-theme="light"] {
@@ -22,8 +23,14 @@
             --item-bg: rgba(240, 240, 240, 0.7);
             --text: #1a1a1a;
             --border: rgba(0, 0, 0, 0.1);
-            --overlay: rgba(255, 255, 255, 0.3);
+            --overlay: rgba(255, 255, 255, 0.4);
         }
+
+        /* DYNAMIC LOGO LOGIC */
+        /* When Photo is ON and Theme is DARK -> White Logo */
+        body.has-photo[data-theme="dark"] { --logo-color: #ffffff; }
+        /* When Photo is ON and Theme is LIGHT -> Black Logo */
+        body.has-photo[data-theme="light"] { --logo-color: #000000; }
 
         body {
             background-color: var(--bg);
@@ -41,7 +48,6 @@
             transition: all 0.4s ease;
         }
 
-        /* The Tint Layer */
         body.has-photo::before {
             content: "";
             position: fixed;
@@ -61,11 +67,13 @@
         }
 
         h1 { 
-            color: var(--orange); 
+            color: var(--logo-color); 
             letter-spacing: 3px; 
             font-size: 28px; 
             margin: 0; 
-            text-shadow: 0 2px 15px rgba(0,0,0,0.5); 
+            transition: color 0.4s ease;
+            /* Added text-shadow to make it pop on busy backgrounds */
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
 
         .theme-toggle { 
@@ -90,7 +98,7 @@
         }
 
         #progressBar { 
-            background: linear-gradient(90deg, var(--orange), #ff9500); 
+            background: var(--orange); 
             height: 100%; width: 0%; 
             transition: width 0.5s cubic-bezier(0.1, 0.7, 0.1, 1); 
         }
@@ -103,7 +111,6 @@
             -webkit-backdrop-filter: blur(15px); 
             border: 1px solid var(--border); 
             margin-bottom: 25px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
 
         select, input { 
@@ -126,7 +133,6 @@
             border-radius: 12px; 
             width: 100%; 
             font-weight: bold; 
-            letter-spacing: 1px;
         }
 
         .habit-item { 
@@ -139,11 +145,10 @@
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px); 
             border: 1px solid var(--border); 
-            transition: transform 0.2s ease;
         }
 
-        .habit-text { flex-grow: 1; margin-left: 15px; font-size: 17px; font-weight: 500; }
-        .habit-item.completed { opacity: 0.5; transform: scale(0.97); }
+        .habit-text { flex-grow: 1; margin-left: 15px; font-size: 17px; }
+        .habit-item.completed { opacity: 0.5; }
 
         .check-btn { 
             border: 2px solid var(--orange); 
@@ -214,7 +219,7 @@
             const body = document.getElementById('mainBody');
             if (usePhoto) {
                 body.classList.add('has-photo');
-                // Using a high-quality Unsplash image direct link
+                // Updated to a neutral mountain landscape
                 body.style.backgroundImage = `url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1600&q=80')`;
             } else {
                 body.classList.remove('has-photo');
